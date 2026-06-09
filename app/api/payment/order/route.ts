@@ -25,6 +25,7 @@ export async function POST(req: Request) {
   const order = await razorpay.orders.create({
     amount: amountPaise,
     currency: 'INR',
+    receipt: `booking_${Date.now()}`,
     notes: { walkerId, dogId, ownerId: user.id, date, duration: String(duration) },
   })
 

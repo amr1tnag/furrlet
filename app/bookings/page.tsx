@@ -142,7 +142,7 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
           {[
             { icon: '📅', label: 'Date', value: b.date },
             { icon: '⏱', label: 'Duration', value: `${b.duration} min` },
-            { icon: '💰', label: 'Total', value: `$${b.totalPrice.toFixed(2)}` },
+            { icon: '💰', label: 'Total', value: `₹${b.totalPrice.toFixed(2)}` },
           ].map(({ icon, label, value }) => (
             <div key={label} className="bg-gray-50 rounded-xl p-3">
               <div className="text-xs text-gray-400 mb-0.5">{icon} {label}</div>

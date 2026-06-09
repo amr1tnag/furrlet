@@ -151,7 +151,7 @@ export default function Walkers() {
             <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-semibold text-gray-700">Max hourly rate</label>
               <span className="text-sm font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
-                Up to ${maxPrice}/hr
+                Up to ₹{maxPrice}/hr
               </span>
             </div>
             <input
@@ -164,8 +164,8 @@ export default function Walkers() {
               className="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-amber-500"
             />
             <div className="flex justify-between text-xs text-gray-400 mt-1">
-              <span>$0/hr</span>
-              <span>${maxPossiblePrice}/hr</span>
+              <span>₹0/hr</span>
+              <span>₹{maxPossiblePrice}/hr</span>
             </div>
           </div>
         )}
@@ -249,7 +249,7 @@ export default function Walkers() {
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-50">
                   <div>
-                    <span className="text-xl font-black text-gray-900">${w.hourlyRate}</span>
+                    <span className="text-xl font-black text-gray-900">₹{w.hourlyRate}</span>
                     <span className="text-gray-400 text-sm font-normal">/hr</span>
                   </div>
                   <Link href={`/walkers/${w.user.id}`} className="btn-primary text-sm py-2 px-4">

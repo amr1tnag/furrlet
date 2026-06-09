@@ -46,7 +46,7 @@ export default function Dashboard() {
     : [
         { icon: '🕐', label: 'Pending', value: pending, href: '/bookings', color: 'from-yellow-400 to-amber-400' },
         { icon: '✅', label: 'Completed', value: completed, href: '/bookings', color: 'from-green-400 to-emerald-400' },
-        { icon: '💰', label: 'Earned', value: `$${earnings.toFixed(0)}`, href: '/bookings', color: 'from-blue-400 to-indigo-400' },
+        { icon: '💰', label: 'Earned', value: `₹${earnings.toFixed(0)}`, href: '/bookings', color: 'from-blue-400 to-indigo-400' },
       ]
 
   const actions = role === 'OWNER'

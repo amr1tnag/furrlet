@@ -84,8 +84,7 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
     </div>
   )
 
-  const price = ((walker.hourlyRate * parseInt(form.duration)) / 60).toFixed(2)
-  const priceINR = (parseFloat(price) * 83).toFixed(0)
+  const priceINR = Math.round((walker.hourlyRate * parseInt(form.duration)) / 60)
   const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY
   const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${mapsKey}&q=${encodeURIComponent(walker.city)}&zoom=13`
 
@@ -121,7 +120,7 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
             )}
           </div>
           <div className="text-right flex-shrink-0">
-            <div className="text-2xl font-black text-gray-900">₹{Math.round(walker.hourlyRate * 83)}</div>
+            <div className="text-2xl font-black text-gray-900">₹{walker.hourlyRate}</div>
             <div className="text-gray-400 text-sm">/hr</div>
           </div>
         </div>

@@ -108,8 +108,8 @@ export default function WalkerProfilePage() {
               <input type="text" required value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} className="input" placeholder="Mumbai" />
             </div>
             <div>
-              <label className="label">Hourly Rate ($)</label>
-              <input type="number" required min={1} value={form.hourlyRate} onChange={e => setForm(f => ({ ...f, hourlyRate: e.target.value }))} className="input" placeholder="15" />
+              <label className="label">Hourly Rate (₹)</label>
+              <input type="number" required min={1} value={form.hourlyRate} onChange={e => setForm(f => ({ ...f, hourlyRate: e.target.value }))} className="input" placeholder="500" />
             </div>
           </div>
           <div>
