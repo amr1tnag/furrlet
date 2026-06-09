@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
+import { sendBookingRequestEmail } from '@/lib/email'
 
 export async function GET() {
   const session = await getServerSession()
@@ -25,6 +26,18 @@ export async function POST(req: Request) {
   const totalPrice = (walkerProfile.hourlyRate * duration) / 60
   const booking = await prisma.booking.create({
     data: { walkerId, dogId, ownerId: user.id, date, duration: parseInt(duration), totalPrice },
+    include: { dog: true, walker: { select: { name: true, email: true } } },
   })
+  try {
+    await sendBookingRequestEmail({
+      walkerEmail: booking.walker.email,
+      walkerName: booking.walker.name,
+      ownerName: user.name,
+      dogName: booking.dog.name,
+      date,
+      duration: parseInt(duration),
+      totalPrice,
+    })
+  } catch (_) {}
   return NextResponse.json(booking)
 }

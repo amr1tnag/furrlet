@@ -1,0 +1,68 @@
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+const FROM = 'Furrlet <notifications@furrlet.in>'
+
+export async function sendBookingRequestEmail({ walkerEmail, walkerName, ownerName, dogName, date, duration, totalPrice }: {
+  walkerEmail: string
+  walkerName: string
+  ownerName: string
+  dogName: string
+  date: string
+  duration: number
+  totalPrice: number
+}) {
+  await resend.emails.send({
+    from: FROM,
+    to: walkerEmail,
+    subject: `New booking request from ${ownerName}`,
+    html: `
+      <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fffbeb;border-radius:16px;">
+        <div style="font-size:32px;margin-bottom:16px;">🐾</div>
+        <h2 style="font-size:22px;font-weight:800;color:#111827;margin:0 0 8px;">New Walk Request!</h2>
+        <p style="color:#6b7280;font-size:15px;margin:0 0 24px;">You have a new booking request on Furrlet.</p>
+        <div style="background:white;border-radius:12px;padding:20px;border:1px solid #f3f4f6;margin-bottom:24px;">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Owner</span><span style="font-weight:600;font-size:14px;color:#111827;">${ownerName}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Dog</span><span style="font-weight:600;font-size:14px;color:#111827;">${dogName}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Date</span><span style="font-weight:600;font-size:14px;color:#111827;">${date}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Duration</span><span style="font-weight:600;font-size:14px;color:#111827;">${duration} min</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:#6b7280;font-size:14px;">Total</span><span style="font-weight:800;font-size:16px;color:#f59e0b;">$${totalPrice.toFixed(2)}</span></div>
+        </div>
+        <a href="https://furrlet.in/bookings" style="display:block;text-align:center;background:#f59e0b;color:white;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;text-decoration:none;">Accept or Decline →</a>
+        <p style="color:#9ca3af;font-size:12px;margin-top:24px;text-align:center;">Furrlet · Making every tail wag</p>
+      </div>
+    `,
+  })
+}
+
+export async function sendBookingStatusEmail({ ownerEmail, ownerName, walkerName, dogName, date, status }: {
+  ownerEmail: string
+  ownerName: string
+  walkerName: string
+  dogName: string
+  date: string
+  status: string
+}) {
+  const accepted = status === 'ACCEPTED'
+  await resend.emails.send({
+    from: FROM,
+    to: ownerEmail,
+    subject: `Your booking was ${accepted ? 'accepted' : 'declined'} by ${walkerName}`,
+    html: `
+      <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fffbeb;border-radius:16px;">
+        <div style="font-size:32px;margin-bottom:16px;">${accepted ? '✅' : '❌'}</div>
+        <h2 style="font-size:22px;font-weight:800;color:#111827;margin:0 0 8px;">Booking ${accepted ? 'Accepted!' : 'Declined'}</h2>
+        <p style="color:#6b7280;font-size:15px;margin:0 0 24px;">
+          ${accepted
+            ? `Great news! <strong>${walkerName}</strong> has accepted your booking for <strong>${dogName}</strong> on <strong>${date}</strong>.`
+            : `<strong>${walkerName}</strong> is unable to walk <strong>${dogName}</strong> on <strong>${date}</strong>. Please browse other walkers.`
+          }
+        </p>
+        <a href="https://furrlet.in/${accepted ? 'bookings' : 'walkers'}" style="display:block;text-align:center;background:#f59e0b;color:white;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;text-decoration:none;">
+          ${accepted ? 'View Booking →' : 'Find Another Walker →'}
+        </a>
+        <p style="color:#9ca3af;font-size:12px;margin-top:24px;text-align:center;">Furrlet · Making every tail wag</p>
+      </div>
+    `,
+  })
+}
