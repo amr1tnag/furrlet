@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   return new ImageResponse(
@@ -10,30 +11,42 @@ export async function GET() {
         background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fff7ed 100%)',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'sans-serif', position: 'relative',
+        fontFamily: 'sans-serif',
       }}>
-        {/* Background blobs */}
-        <div style={{ position: 'absolute', top: 40, right: 80, width: 300, height: 300, borderRadius: '50%', background: 'rgba(251,191,36,0.15)', filter: 'blur(60px)' }} />
-        <div style={{ position: 'absolute', bottom: 40, left: 80, width: 400, height: 400, borderRadius: '50%', background: 'rgba(249,115,22,0.1)', filter: 'blur(80px)' }} />
-
-        {/* Logo */}
+        {/* Logo row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
-          <div style={{ fontSize: '64px' }}>🐾</div>
-          <div style={{ fontSize: '56px', fontWeight: 900, color: '#111827', letterSpacing: '-2px' }}>Furrlet</div>
+          <div style={{
+            width: '80px', height: '80px', borderRadius: '24px',
+            background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '40px', color: 'white', fontWeight: 900,
+          }}>F</div>
+          <div style={{ fontSize: '60px', fontWeight: 900, color: '#111827', letterSpacing: '-2px' }}>Furrlet</div>
         </div>
 
         {/* Headline */}
-        <div style={{ fontSize: '42px', fontWeight: 800, color: '#111827', textAlign: 'center', lineHeight: 1.2, marginBottom: '20px', maxWidth: '800px' }}>
-          Trusted Dog Walkers<br />Near You
+        <div style={{ fontSize: '44px', fontWeight: 800, color: '#111827', textAlign: 'center', lineHeight: 1.15, marginBottom: '20px', maxWidth: '820px' }}>
+          Trusted Dog Walkers Near You
         </div>
 
         {/* Subtext */}
-        <div style={{ fontSize: '22px', color: '#6b7280', textAlign: 'center', maxWidth: '600px', marginBottom: '40px' }}>
-          Book a verified walker in under 2 minutes.<br />UPI · Cards · Netbanking accepted.
+        <div style={{ fontSize: '22px', color: '#6b7280', textAlign: 'center', maxWidth: '620px', marginBottom: '44px', lineHeight: 1.5 }}>
+          Book a verified walker in under 2 minutes. UPI, Cards & Netbanking accepted.
         </div>
 
-        {/* CTA pill */}
-        <div style={{ background: '#f59e0b', color: 'white', fontSize: '20px', fontWeight: 700, padding: '16px 40px', borderRadius: '16px' }}>
+        {/* Pills */}
+        <div style={{ display: 'flex', gap: '16px' }}>
+          {['Find a Walker', 'Earn Money Walking Dogs', 'India\'s Dog Walking App'].map(t => (
+            <div key={t} style={{
+              background: 'white', border: '1px solid #fde68a',
+              color: '#92400e', fontSize: '16px', fontWeight: 600,
+              padding: '10px 20px', borderRadius: '99px',
+            }}>{t}</div>
+          ))}
+        </div>
+
+        {/* Domain */}
+        <div style={{ marginTop: '40px', background: '#f59e0b', color: 'white', fontSize: '20px', fontWeight: 700, padding: '14px 36px', borderRadius: '14px' }}>
           furrlet.in
         </div>
       </div>
