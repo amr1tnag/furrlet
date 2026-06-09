@@ -8,7 +8,6 @@ async function getUser() {
   return prisma.user.findUnique({ where: { email: session.user.email } })
 }
 
-// Owner polls this to get walker's current location
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   const user = await getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -20,12 +19,12 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
   return NextResponse.json({
     trackingActive: booking.trackingActive,
+    walkStartedAt: booking.walkStartedAt,
     lat: booking.lat,
     lng: booking.lng,
   })
 }
 
-// Walker posts their location
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   const user = await getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -42,8 +41,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       lat: active ? lat : null,
       lng: active ? lng : null,
       trackingActive: active ?? true,
+      // Only set walkStartedAt the first time walk starts
+      ...(active && !booking.walkStartedAt ? { walkStartedAt: new Date() } : {}),
     },
   })
 
-  return NextResponse.json({ ok: true, trackingActive: updated.trackingActive })
+  return NextResponse.json({
+    ok: true,
+    trackingActive: updated.trackingActive,
+    walkStartedAt: updated.walkStartedAt,
+  })
 }
