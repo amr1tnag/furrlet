@@ -127,11 +127,11 @@ export default function ManageDogs() {
           {[...Array(3)].map((_, i) => <SkeletonCard key={i} />)}
         </div>
       ) : dogs.length === 0 ? (
-        <div className="card p-16 text-center">
-          <div className="text-5xl mb-4">🐶</div>
-          <p className="text-gray-600 font-semibold">No dogs added yet</p>
-          <p className="text-gray-400 text-sm mt-1">Add your first dog to start booking walks</p>
-          <button onClick={() => setAdding(true)} className="btn-primary mt-4 mx-auto">+ Add Dog</button>
+        <div className="card p-12 text-center border-2 border-dashed border-amber-200">
+          <div className="text-6xl mb-4 animate-bounce" style={{ animationDuration: '2s' }}>🐶</div>
+          <p className="text-gray-800 font-bold text-lg mb-1">No dogs yet!</p>
+          <p className="text-gray-400 text-sm mb-6 max-w-xs mx-auto">Add your furry friend so walkers know who they'll be spending time with.</p>
+          <button onClick={() => setAdding(true)} className="btn-primary mx-auto">+ Add My Dog</button>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 gap-4">

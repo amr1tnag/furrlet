@@ -18,7 +18,7 @@ function SignUpForm() {
     const res = await fetch('/api/auth/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
     if (!res.ok) { setError((await res.json()).error); setLoading(false); return }
     await signIn('credentials', { email: form.email, password: form.password, redirect: false })
-    router.push('/dashboard')
+    router.push('/onboarding')
   }
 
   return (
