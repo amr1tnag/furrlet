@@ -17,22 +17,26 @@ model User {
 
   walkerProfile    WalkerProfile?
   dogs             Dog[]
-  bookingsAsOwner  Booking[]  @relation("OwnerBookings")
-  bookingsAsWalker Booking[]  @relation("WalkerBookings")
-  sentMessages     Message[]  @relation("SentMessages")
+  bookingsAsOwner  Booking[]          @relation("OwnerBookings")
+  bookingsAsWalker Booking[]          @relation("WalkerBookings")
+  sentMessages     Message[]          @relation("SentMessages")
+  pushSubscriptions PushSubscription[]
 }
 
 model WalkerProfile {
-  id           String  @id @default(cuid())
-  userId       String  @unique
-  user         User    @relation(fields: [userId], references: [id])
-  bio          String
-  hourlyRate   Float
-  city         String
-  availability String
-  rating       Float   @default(0)
-  reviewCount  Int     @default(0)
-  photoUrl     String  @default("")
+  id                 String  @id @default(cuid())
+  userId             String  @unique
+  user               User    @relation(fields: [userId], references: [id])
+  bio                String
+  hourlyRate         Float
+  city               String
+  availability       String
+  rating             Float   @default(0)
+  reviewCount        Int     @default(0)
+  photoUrl           String  @default("")
+  verified           Boolean @default(false)
+  verificationStatus String  @default("UNVERIFIED")
+  aadhaarNumber      String  @default("")
 }
 
 model Dog {
@@ -84,4 +88,13 @@ model Message {
   sender    User     @relation("SentMessages", fields: [senderId], references: [id])
   body      String
   createdAt DateTime @default(now())
+}
+
+model PushSubscription {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  endpoint String @unique
+  p256dh   String
+  auth     String
 }
