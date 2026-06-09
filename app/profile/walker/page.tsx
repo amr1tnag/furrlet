@@ -7,7 +7,7 @@ import Image from 'next/image'
 export default function WalkerProfilePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [form, setForm] = useState({ bio: '', hourlyRate: '', city: '', availability: '', photoUrl: '', upiId: '' })
+  const [form, setForm] = useState({ bio: '', city: '', availability: '', photoUrl: '', upiId: '' })
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -26,7 +26,7 @@ export default function WalkerProfilePage() {
     if (!id) return
     fetch(`/api/walkers/${id}`).then(r => r.ok ? r.json() : null).then(p => {
       if (p) {
-        setForm({ bio: p.bio, hourlyRate: String(p.hourlyRate), city: p.city, availability: p.availability, photoUrl: p.photoUrl || '', upiId: p.upiId || '' })
+        setForm({ bio: p.bio, city: p.city, availability: p.availability, photoUrl: p.photoUrl || '', upiId: p.upiId || '' })
         setVerificationStatus(p.verificationStatus ?? 'NONE')
         setVerified(p.verified ?? false)
       }
@@ -153,15 +153,9 @@ export default function WalkerProfilePage() {
         </div>
 
         <form onSubmit={submit} className="space-y-5">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="label">City</label>
-              <input type="text" required value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} className="input" placeholder="Mumbai" />
-            </div>
-            <div>
-              <label className="label">Hourly Rate (₹)</label>
-              <input type="number" required min={1} value={form.hourlyRate} onChange={e => setForm(f => ({ ...f, hourlyRate: e.target.value }))} className="input" placeholder="500" />
-            </div>
+          <div>
+            <label className="label">City</label>
+            <input type="text" required value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} className="input" placeholder="Mumbai" />
           </div>
           <div>
             <label className="label">Bio</label>

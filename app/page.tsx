@@ -21,7 +21,7 @@ export default function Home() {
           {/* Headline */}
           <h1 className="animate-fade-up delay-100 text-5xl sm:text-7xl font-black text-gray-900 tracking-tight leading-[1.05] mb-6">
             Every tail deserves<br />
-            <span className="gradient-text">a great walk</span>
+            <span className="gradient-text">a happy walk 🐾🐾</span>
           </h1>
 
           <p className="animate-fade-up delay-200 text-lg sm:text-xl text-gray-500 max-w-xl mx-auto mb-12 leading-relaxed">
@@ -33,7 +33,7 @@ export default function Home() {
             <Link href="/auth/signup?role=owner"
               className="group inline-flex items-center justify-center gap-3 bg-amber-500 text-white px-8 py-4 rounded-2xl text-base font-bold hover:bg-amber-600 active:scale-95 transition-all duration-200 shadow-xl shadow-amber-200 hover:shadow-2xl hover:shadow-amber-300 hover:-translate-y-0.5">
               <span className="text-xl group-hover:animate-bounce-soft">🐕</span>
-              I need a walker
+              I&apos;m a dog parent
             </Link>
             <Link href="/auth/signup?role=walker"
               className="group inline-flex items-center justify-center gap-3 glass text-gray-800 px-8 py-4 rounded-2xl text-base font-bold hover:bg-white active:scale-95 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
@@ -128,7 +128,7 @@ export default function Home() {
               { icon: '⭐', title: 'Real reviews', desc: 'See honest ratings before you book. No fake reviews, ever.' },
               { icon: '📍', title: 'Local first', desc: 'Find experienced walkers right in your neighbourhood.' },
               { icon: '💬', title: 'Easy booking', desc: 'Book a walk in under 2 minutes, any time of day or night.' },
-              { icon: '💰', title: 'Fair pricing', desc: 'Transparent hourly rates. No hidden fees, no surprises.' },
+              { icon: '💰', title: 'Simple pricing', desc: '₹99 for 30 min, ₹199 for 1 hour. No hidden fees, no surprises.' },
               { icon: '🐶', title: 'Happy dogs', desc: 'Thousands of tail wags and counting. Your pup deserves the best.' },
             ].map((f, i) => (
               <div key={f.title}
