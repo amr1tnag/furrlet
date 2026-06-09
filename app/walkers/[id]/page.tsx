@@ -33,6 +33,8 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
   if (!walker) return <div className="flex justify-center py-20 text-gray-500">Loading...</div>
 
   const price = ((walker.hourlyRate * parseInt(form.duration)) / 60).toFixed(2)
+  const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY
+  const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${mapsKey}&q=${encodeURIComponent(walker.city)}&zoom=13`
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -56,10 +58,28 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
           <h2 className="font-semibold text-gray-700 mb-1">About</h2>
           <p className="text-gray-600">{walker.bio}</p>
         </div>
-        <div>
+        <div className="mb-6">
           <h2 className="font-semibold text-gray-700 mb-1">Availability</h2>
           <p className="text-gray-600">{walker.availability}</p>
         </div>
+
+        {/* Map */}
+        {mapsKey && (
+          <div>
+            <h2 className="font-semibold text-gray-700 mb-3">Location</h2>
+            <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+              <iframe
+                src={mapSrc}
+                width="100%"
+                height="280"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Reviews */}
