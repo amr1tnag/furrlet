@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
+import { sendPushToUser } from '@/lib/push'
 
 async function getAuthorizedBooking(bookingId: string, userId: string) {
   const booking = await prisma.booking.findUnique({ where: { id: bookingId } })
@@ -47,6 +48,16 @@ export async function POST(req: NextRequest, { params }: { params: { bookingId: 
     data: { bookingId: params.bookingId, senderId: userId, body: body.trim() },
     include: { sender: { select: { id: true, name: true } } },
   })
+
+  // Push to the other participant
+  const recipientId = booking.ownerId === userId ? booking.walkerId : booking.ownerId
+  try {
+    await sendPushToUser(recipientId, {
+      title: `New message from ${user.name}`,
+      body: body.trim().length > 80 ? body.trim().slice(0, 80) + '…' : body.trim(),
+      url: `/messages/${params.bookingId}`,
+    })
+  } catch (_) {}
 
   return NextResponse.json(message)
 }

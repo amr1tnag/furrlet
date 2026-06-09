@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import { sendBookingRequestEmail } from '@/lib/email'
+import { sendPushToUser } from '@/lib/push'
 
 export async function GET() {
   const session = await getServerSession()
@@ -37,6 +38,13 @@ export async function POST(req: Request) {
       date,
       duration: parseInt(duration),
       totalPrice,
+    })
+  } catch (_) {}
+  try {
+    await sendPushToUser(walkerId, {
+      title: 'New Booking Request!',
+      body: `${user.name} wants to book a walk for ${booking.dog.name} on ${date}`,
+      url: '/bookings',
     })
   } catch (_) {}
   return NextResponse.json(booking)

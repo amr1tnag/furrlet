@@ -15,11 +15,12 @@ model User {
   role      String   // "WALKER" or "OWNER"
   createdAt DateTime @default(now())
 
-  walkerProfile    WalkerProfile?
-  dogs             Dog[]
-  bookingsAsOwner  Booking[]  @relation("OwnerBookings")
-  bookingsAsWalker Booking[]  @relation("WalkerBookings")
-  sentMessages     Message[]  @relation("SentMessages")
+  walkerProfile     WalkerProfile?
+  dogs              Dog[]
+  bookingsAsOwner   Booking[]       @relation("OwnerBookings")
+  bookingsAsWalker  Booking[]       @relation("WalkerBookings")
+  sentMessages      Message[]       @relation("SentMessages")
+  pushSubscriptions PushSubscription[]
 }
 
 model WalkerProfile {
@@ -34,7 +35,7 @@ model WalkerProfile {
   reviewCount        Int     @default(0)
   photoUrl           String  @default("")
   verified           Boolean @default(false)
-  verificationStatus String  @default("NONE") // "NONE", "PENDING", "VERIFIED", "REJECTED"
+  verificationStatus String  @default("NONE")
   aadhaarNumber      String  @default("")
 }
 
@@ -44,19 +45,19 @@ model Dog {
   owner    User   @relation(fields: [ownerId], references: [id])
   name     String
   breed    String
-  size     String // "SMALL", "MEDIUM", "LARGE"
+  size     String
   notes    String @default("")
   bookings Booking[]
 }
 
 model Booking {
-  id         String   @id @default(cuid())
-  walkerId   String
-  walker     User     @relation("WalkerBookings", fields: [walkerId], references: [id])
-  dogId      String
-  dog        Dog      @relation(fields: [dogId], references: [id])
-  ownerId    String
-  owner      User     @relation("OwnerBookings", fields: [ownerId], references: [id])
+  id            String   @id @default(cuid())
+  walkerId      String
+  walker        User     @relation("WalkerBookings", fields: [walkerId], references: [id])
+  dogId         String
+  dog           Dog      @relation(fields: [dogId], references: [id])
+  ownerId       String
+  owner         User     @relation("OwnerBookings", fields: [ownerId], references: [id])
   status        String   @default("PENDING")
   date          String
   duration      Int
@@ -86,5 +87,15 @@ model Message {
   senderId  String
   sender    User     @relation("SentMessages", fields: [senderId], references: [id])
   body      String
+  createdAt DateTime @default(now())
+}
+
+model PushSubscription {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  endpoint String @unique
+  p256dh   String
+  auth     String
   createdAt DateTime @default(now())
 }

@@ -2,11 +2,13 @@
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { useState } from 'react'
+import { usePushNotifications } from '@/hooks/usePushNotifications'
 
 export function Nav() {
   const { data: session } = useSession()
   const role = (session?.user as any)?.role
   const [menuOpen, setMenuOpen] = useState(false)
+  const { permission, subscribed, subscribe } = usePushNotifications()
 
   return (
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
@@ -37,6 +39,27 @@ export function Nav() {
                 <Link href="/bookings" className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition font-medium">Bookings</Link>
                 <Link href="/messages" className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition font-medium">Messages</Link>
                 <Link href="/dashboard" className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition font-medium">Dashboard</Link>
+
+                {/* Bell button — shown when not yet subscribed */}
+                {permission !== 'denied' && !subscribed && (
+                  <button
+                    onClick={subscribe}
+                    title="Enable notifications"
+                    className="p-2 rounded-lg text-gray-400 hover:text-amber-500 hover:bg-amber-50 transition relative">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full" />
+                  </button>
+                )}
+                {subscribed && (
+                  <div title="Notifications enabled" className="p-2 rounded-lg text-green-500">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                  </div>
+                )}
+
                 <div className="ml-2 flex items-center gap-2 pl-2 border-l border-gray-100">
                   <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-700 font-semibold text-sm">
                     {session.user?.name?.[0]?.toUpperCase()}
@@ -56,12 +79,22 @@ export function Nav() {
           </div>
 
           {/* Mobile menu button */}
-          <button className="sm:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-50" onClick={() => setMenuOpen(!menuOpen)}>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {menuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
-            </svg>
-          </button>
+          <div className="sm:hidden flex items-center gap-2">
+            {session && permission !== 'denied' && !subscribed && (
+              <button onClick={subscribe} className="p-2 rounded-lg text-gray-400 hover:text-amber-500 relative">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full" />
+              </button>
+            )}
+            <button className="p-2 rounded-lg text-gray-500 hover:bg-gray-50" onClick={() => setMenuOpen(!menuOpen)}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}

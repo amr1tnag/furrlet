@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import { sendBookingStatusEmail, sendRefundEmail } from '@/lib/email'
+import { sendPushToUser } from '@/lib/push'
 import Razorpay from 'razorpay'
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
@@ -71,7 +72,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     },
   })
 
-  // Send status emails
+  // Send status emails + push notifications
   if (status === 'ACCEPTED' || status === 'DECLINED') {
     try {
       await sendBookingStatusEmail({
@@ -81,6 +82,26 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         dogName: booking.dog.name,
         date: booking.date,
         status,
+      })
+    } catch (_) {}
+    try {
+      await sendPushToUser(existing.ownerId, {
+        title: status === 'ACCEPTED' ? 'Booking Accepted!' : 'Booking Declined',
+        body: status === 'ACCEPTED'
+          ? `${booking.walker.name} accepted the walk for ${booking.dog.name} on ${booking.date}`
+          : `${booking.walker.name} declined the walk for ${booking.dog.name}. Find another walker.`,
+        url: '/bookings',
+      })
+    } catch (_) {}
+  }
+
+  // Push to walker on new booking (PENDING handled in POST /api/bookings)
+  if (status === 'COMPLETED') {
+    try {
+      await sendPushToUser(existing.ownerId, {
+        title: 'Walk Completed!',
+        body: `${booking.dog.name}'s walk is done. Leave a review for ${booking.walker.name}.`,
+        url: '/bookings',
       })
     } catch (_) {}
   }
