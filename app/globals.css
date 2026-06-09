@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 * {
   -webkit-font-smoothing: antialiased;
@@ -15,26 +15,84 @@ body {
   color: #111827;
 }
 
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+
 @layer components {
   .btn-primary {
-    @apply bg-amber-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-amber-600 active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-amber-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm
+           hover:bg-amber-600 active:scale-[0.97] transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed shadow-sm
+           hover:shadow-md hover:shadow-amber-200;
   }
   .btn-secondary {
-    @apply bg-white text-gray-700 border border-gray-200 px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50 active:scale-95 transition-all duration-150;
+    @apply bg-white text-gray-700 border border-gray-200 px-5 py-2.5 rounded-xl
+           font-semibold text-sm hover:bg-gray-50 hover:border-gray-300
+           active:scale-[0.97] transition-all duration-150 shadow-sm;
   }
   .card {
-    @apply bg-white rounded-2xl border border-gray-100 shadow-sm;
+    @apply bg-white rounded-2xl border border-gray-100 shadow-card;
+  }
+  .card-hover {
+    @apply bg-white rounded-2xl border border-gray-100 shadow-card
+           hover:shadow-card-hover hover:-translate-y-1 hover:border-amber-100
+           transition-all duration-300 cursor-pointer;
   }
   .input {
-    @apply w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition bg-white placeholder-gray-400;
+    @apply w-full border border-gray-200 rounded-xl px-4 py-3 text-sm
+           focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent
+           transition-all duration-200 bg-white placeholder-gray-400
+           hover:border-gray-300;
   }
   .label {
     @apply block text-sm font-medium text-gray-700 mb-1.5;
   }
-  .page-title {
-    @apply text-2xl font-bold text-gray-900 tracking-tight;
+  .badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold;
   }
-  .page-subtitle {
-    @apply text-gray-500 text-sm mt-1;
+  .shimmer {
+    @apply bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 bg-[length:200%_100%] animate-shimmer rounded-xl;
   }
 }
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mesh gradient background */
+.mesh-bg {
+  background-color: #fffbeb;
+  background-image:
+    radial-gradient(at 40% 20%, rgba(251, 191, 36, 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(249, 115, 22, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(245, 158, 11, 0.1) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(234, 179, 8, 0.08) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(251, 191, 36, 0.1) 0px, transparent 50%);
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Stagger animation delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+.animate-fade-up { opacity: 0; animation: fadeUp 0.6s ease-out forwards; }
