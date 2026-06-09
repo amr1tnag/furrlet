@@ -179,6 +179,13 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
               className="text-xs text-amber-500 hover:text-amber-700 font-semibold transition-colors flex items-center gap-1">
               💬 Message {role === 'OWNER' ? 'walker' : 'owner'}
             </Link>
+            {role === 'OWNER' && b.status === 'ACCEPTED' && (
+              <Link href={`/bookings/${b.id}`}
+                className="text-xs text-green-600 hover:text-green-700 font-semibold transition-colors flex items-center gap-1 bg-green-50 px-2.5 py-1 rounded-lg border border-green-100">
+                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                Track Live
+              </Link>
+            )}
             {role === 'OWNER' && (b.status === 'PENDING' || b.status === 'ACCEPTED') && (
               <button
                 onClick={() => {
@@ -186,7 +193,7 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
                 }}
                 disabled={!!acting}
                 className="text-xs text-gray-400 hover:text-red-500 font-semibold transition-colors flex items-center gap-1 disabled:opacity-50">
-                🚫 Cancel booking
+                🚫 Cancel
               </button>
             )}
           </div>
@@ -212,12 +219,16 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
         )}
 
         {role === 'WALKER' && b.status === 'ACCEPTED' && (
-          <div className="pt-2 border-t border-gray-50">
+          <div className="pt-2 border-t border-gray-50 flex gap-2">
+            <Link href={`/bookings/${b.id}`}
+              className="flex-1 flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all active:scale-95 shadow-sm">
+              📍 Share Location
+            </Link>
             <button
               onClick={() => updateStatus(b.id, 'COMPLETED')}
               disabled={!!acting}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all active:scale-95 disabled:opacity-50 shadow-sm">
-              {acting === b.id + 'COMPLETED' ? 'Updating...' : '🏁 Mark as Completed'}
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all active:scale-95 disabled:opacity-50 shadow-sm">
+              {acting === b.id + 'COMPLETED' ? '...' : '🏁 Complete'}
             </button>
           </div>
         )}

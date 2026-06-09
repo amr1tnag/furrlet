@@ -65,6 +65,9 @@ model Booking {
   paymentId     String   @default("")
   paymentStatus String   @default("UNPAID")
   createdAt     DateTime @default(now())
+  trackingActive Boolean  @default(false)
+  lat           Float?
+  lng           Float?
   review        Review?
   messages      Message[]
 }
