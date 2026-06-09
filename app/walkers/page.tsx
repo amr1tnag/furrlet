@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 function SkeletonCard() {
   return (
@@ -210,8 +211,10 @@ export default function Walkers() {
               <div className={`h-1.5 bg-gradient-to-r ${gradients[i % gradients.length]} opacity-70 group-hover:opacity-100 transition-opacity`} />
               <div className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-14 h-14 bg-gradient-to-br ${gradients[i % gradients.length]} rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                    🦮
+                  <div className={`w-14 h-14 bg-gradient-to-br ${gradients[i % gradients.length]} rounded-2xl flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300 overflow-hidden flex items-center justify-center text-2xl`}>
+                    {w.photoUrl ? (
+                      <Image src={w.photoUrl} alt={w.user.name} width={56} height={56} className="object-cover w-full h-full" />
+                    ) : '🦮'}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="font-bold text-gray-900 truncate text-base">{w.user.name}</div>

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 export default function WalkerDetail({ params }: { params: { id: string } }) {
   const router = useRouter()
@@ -37,7 +38,11 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 mb-6">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-3xl">🦮</div>
+          <div className="w-16 h-16 bg-amber-100 rounded-full overflow-hidden flex items-center justify-center text-3xl flex-shrink-0">
+              {walker.photoUrl
+                ? <Image src={walker.photoUrl} alt={walker.user.name} width={64} height={64} className="object-cover w-full h-full" />
+                : '🦮'}
+            </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">{walker.user.name}</h1>
             <p className="text-gray-500">📍 {walker.city}</p>

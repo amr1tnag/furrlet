@@ -31,6 +31,7 @@ model WalkerProfile {
   availability String
   rating       Float   @default(0)
   reviewCount  Int     @default(0)
+  photoUrl     String  @default("")
 }
 
 model Dog {

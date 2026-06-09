@@ -15,11 +15,11 @@ export async function POST(req: Request) {
   if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const user = await prisma.user.findUnique({ where: { email: session.user.email } })
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
-  const { bio, hourlyRate, city, availability } = await req.json()
+  const { bio, hourlyRate, city, availability, photoUrl } = await req.json()
   const profile = await prisma.walkerProfile.upsert({
     where: { userId: user.id },
-    update: { bio, hourlyRate: parseFloat(hourlyRate), city, availability },
-    create: { userId: user.id, bio, hourlyRate: parseFloat(hourlyRate), city, availability },
+    update: { bio, hourlyRate: parseFloat(hourlyRate), city, availability, ...(photoUrl !== undefined && { photoUrl }) },
+    create: { userId: user.id, bio, hourlyRate: parseFloat(hourlyRate), city, availability, photoUrl: photoUrl || '' },
   })
   return NextResponse.json(profile)
 }
