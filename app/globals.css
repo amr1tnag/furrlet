@@ -18,6 +18,9 @@ body {
 /* Smooth scroll */
 html { scroll-behavior: smooth; }
 
+/* Safe area for bottom nav on iOS */
+.safe-area-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
