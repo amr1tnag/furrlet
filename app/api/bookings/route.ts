@@ -10,8 +10,8 @@ export async function GET() {
   const user = await prisma.user.findUnique({ where: { email: session.user.email } })
   if (!user) return NextResponse.json([], { status: 200 })
   const bookings = user.role === 'OWNER'
-    ? await prisma.booking.findMany({ where: { ownerId: user.id }, include: { dog: true, walker: { select: { id: true, name: true } }, review: true }, orderBy: { createdAt: 'desc' } })
-    : await prisma.booking.findMany({ where: { walkerId: user.id }, include: { dog: true, owner: { select: { id: true, name: true } }, review: true }, orderBy: { createdAt: 'desc' } })
+    ? await prisma.booking.findMany({ where: { ownerId: user.id }, include: { dog: true, walker: { select: { id: true, name: true } }, review: true, messages: { include: { sender: { select: { id: true } } }, orderBy: { createdAt: 'asc' } } }, orderBy: { createdAt: 'desc' } })
+    : await prisma.booking.findMany({ where: { walkerId: user.id }, include: { dog: true, owner: { select: { id: true, name: true } }, review: true, messages: { include: { sender: { select: { id: true } } }, orderBy: { createdAt: 'asc' } } }, orderBy: { createdAt: 'desc' } })
   return NextResponse.json(bookings)
 }
 

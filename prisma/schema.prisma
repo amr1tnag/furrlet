@@ -15,10 +15,11 @@ model User {
   role      String   // "WALKER" or "OWNER"
   createdAt DateTime @default(now())
 
-  walkerProfile  WalkerProfile?
-  dogs           Dog[]
-  bookingsAsOwner  Booking[] @relation("OwnerBookings")
-  bookingsAsWalker Booking[] @relation("WalkerBookings")
+  walkerProfile    WalkerProfile?
+  dogs             Dog[]
+  bookingsAsOwner  Booking[]  @relation("OwnerBookings")
+  bookingsAsWalker Booking[]  @relation("WalkerBookings")
+  sentMessages     Message[]  @relation("SentMessages")
 }
 
 model WalkerProfile {
@@ -61,6 +62,7 @@ model Booking {
   paymentStatus String   @default("UNPAID")
   createdAt     DateTime @default(now())
   review        Review?
+  messages      Message[]
 }
 
 model Review {
@@ -71,5 +73,15 @@ model Review {
   ownerId   String
   rating    Int
   comment   String   @default("")
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  senderId  String
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
+  body      String
   createdAt DateTime @default(now())
 }
