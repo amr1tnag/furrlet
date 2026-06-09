@@ -19,7 +19,7 @@ export async function POST(req: Request) {
   const walkerProfile = await prisma.walkerProfile.findFirst({ where: { userId: walkerId } })
   if (!walkerProfile) return NextResponse.json({ error: 'Walker not found' }, { status: 404 })
 
-  const totalPrice = (walkerProfile.hourlyRate * duration) / 60
+  const totalPrice = parseInt(duration) === 30 ? 99 : 199
   const amountPaise = Math.round(totalPrice * 100) // Razorpay uses paise
 
   const order = await razorpay.orders.create({

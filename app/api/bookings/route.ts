@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   const { walkerId, dogId, date, duration } = await req.json()
   const walkerProfile = await prisma.walkerProfile.findFirst({ where: { userId: walkerId } })
   if (!walkerProfile) return NextResponse.json({ error: 'Walker not found' }, { status: 404 })
-  const totalPrice = (walkerProfile.hourlyRate * duration) / 60
+  const totalPrice = parseInt(duration) === 30 ? 99 : 199
   const booking = await prisma.booking.create({
     data: { walkerId, dogId, ownerId: user.id, date, duration: parseInt(duration), totalPrice },
     include: { dog: true, walker: { select: { name: true, email: true } } },

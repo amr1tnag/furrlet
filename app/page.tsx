@@ -165,6 +165,60 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Pricing section */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">Simple, transparent pricing</h2>
+            <p className="text-gray-500 text-lg">No hidden fees. Pay only for the walk.</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-6">
+            {/* 30 min */}
+            <div className="card p-8 flex flex-col items-center text-center hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+              <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mb-5">🐕</div>
+              <div className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Quick Walk</div>
+              <div className="text-5xl font-black text-gray-900 mb-1">₹99</div>
+              <div className="text-gray-400 text-sm mb-6">per 30 minutes</div>
+              <ul className="space-y-2.5 text-sm text-gray-600 mb-8 w-full text-left">
+                {['30-minute walk', 'GPS-tracked route', 'Post-walk report', 'Verified walker'].map(f => (
+                  <li key={f} className="flex items-center gap-2">
+                    <span className="w-5 h-5 bg-green-50 text-green-500 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">✓</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/auth/signup" className="w-full text-center py-3 rounded-xl border-2 border-amber-400 text-amber-600 font-bold hover:bg-amber-50 transition-colors">
+                Get started
+              </Link>
+            </div>
+
+            {/* 1 hour — highlighted */}
+            <div className="relative card p-8 flex flex-col items-center text-center border-amber-300 shadow-[0_0_0_2px_rgba(251,191,36,0.3)] hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-orange-400" />
+              <div className="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">Popular</div>
+              <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mb-5">🦮</div>
+              <div className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Full Walk</div>
+              <div className="text-5xl font-black text-gray-900 mb-1">₹199</div>
+              <div className="text-gray-400 text-sm mb-6">per 60 minutes</div>
+              <ul className="space-y-2.5 text-sm text-gray-600 mb-8 w-full text-left">
+                {['60-minute walk', 'GPS-tracked route', 'Post-walk report', 'Verified walker', 'Best value'].map(f => (
+                  <li key={f} className="flex items-center gap-2">
+                    <span className="w-5 h-5 bg-green-50 text-green-500 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">✓</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/auth/signup" className="w-full text-center py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition-colors shadow-sm">
+                Get started
+              </Link>
+            </div>
+          </div>
+
+          <p className="text-center text-gray-400 text-sm mt-8">Payments secured by Razorpay · UPI, cards &amp; netbanking accepted</p>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 pt-14 pb-0 px-4">
         <div className="max-w-6xl mx-auto">
