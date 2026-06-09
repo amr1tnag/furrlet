@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 
 declare global {
@@ -9,16 +9,27 @@ declare global {
 
 export default function WalkerDetail({ params }: { params: { id: string } }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [walker, setWalker] = useState<any>(null)
   const [dogs, setDogs] = useState<any[]>([])
   const [reviews, setReviews] = useState<any[]>([])
   const [form, setForm] = useState({ dogId: '', date: '', duration: '60' })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [repeatBanner, setRepeatBanner] = useState(false)
 
   useEffect(() => {
     fetch(`/api/walkers/${params.id}`).then(r => r.json()).then(setWalker)
-    fetch('/api/dogs').then(r => r.json()).then(d => setDogs(Array.isArray(d) ? d : []))
+    fetch('/api/dogs').then(r => r.json()).then(d => {
+      setDogs(Array.isArray(d) ? d : [])
+      const dogId = searchParams.get('dogId')
+      const duration = searchParams.get('duration')
+      if (dogId || duration) {
+        setForm(f => ({ ...f, dogId: dogId || f.dogId, duration: duration || f.duration }))
+        setRepeatBanner(true)
+        setTimeout(() => document.getElementById('book-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300)
+      }
+    })
     fetch(`/api/reviews/${params.id}`).then(r => r.json()).then(d => setReviews(Array.isArray(d) ? d : []))
     // Load Razorpay script
     const script = document.createElement('script')
@@ -177,7 +188,13 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
       )}
 
       {/* Booking form */}
-      <div className="card p-8">
+      <div className="card p-8" id="book-form">
+        {repeatBanner && (
+          <div className="mb-5 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center gap-2">
+            <span>🔁</span>
+            <p className="text-amber-800 text-sm font-semibold">Pre-filled from your last booking — just pick a new date!</p>
+          </div>
+        )}
         <h2 className="font-black text-gray-900 text-xl mb-6">Book a Walk</h2>
         {success ? (
           <div className="text-center py-10">

@@ -208,6 +208,17 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
           </div>
         )}
 
+        {/* Book again */}
+        {role === 'OWNER' && b.status === 'COMPLETED' && (
+          <div className="pt-3 border-t border-gray-50 flex justify-end">
+            <Link
+              href={`/walkers/${b.walker?.id}?dogId=${b.dog?.id}&duration=${b.duration}`}
+              className="text-xs text-amber-500 hover:text-amber-700 font-semibold transition-colors flex items-center gap-1">
+              🔁 Book again
+            </Link>
+          </div>
+        )}
+
         {/* Owner review */}
         {role === 'OWNER' && b.status === 'COMPLETED' && (
           b.review ? (
