@@ -18,65 +18,127 @@ export default function Dashboard() {
     if (role === 'OWNER') fetch('/api/dogs').then(r => r.json()).then(d => setDogs(Array.isArray(d) ? d : []))
   }, [session, role])
 
-  if (status === 'loading') return <div className="flex justify-center py-20"><div className="text-gray-500">Loading...</div></div>
+  if (status === 'loading') return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
 
   const pending = bookings.filter(b => b.status === 'PENDING').length
   const completed = bookings.filter(b => b.status === 'COMPLETED').length
   const earnings = bookings.filter(b => b.status === 'COMPLETED').reduce((s, b) => s + b.totalPrice, 0)
 
-  const cards: [string, string, string | number, string][] = role === 'OWNER' ? [
+  const stats: [string, string, string | number, string][] = role === 'OWNER' ? [
     ['🐕', 'My Dogs', dogs.length, '/profile/dogs'],
-    ['📅', 'Pending Bookings', pending, '/bookings'],
+    ['🕐', 'Pending Bookings', pending, '/bookings'],
     ['✅', 'Completed Walks', completed, '/bookings'],
   ] : [
-    ['📅', 'Pending Requests', pending, '/bookings'],
+    ['🕐', 'Pending Requests', pending, '/bookings'],
     ['✅', 'Completed Walks', completed, '/bookings'],
     ['💰', 'Total Earned', `$${earnings.toFixed(2)}`, '/bookings'],
   ]
 
-  return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome back, {session?.user?.name} 👋</h1>
-      <p className="text-gray-500 mb-8">{role === 'OWNER' ? 'Manage your dogs and bookings' : 'Manage your walks and earnings'}</p>
+  const recentBookings = bookings.slice(0, 3)
 
-      <div className="grid sm:grid-cols-3 gap-4 mb-8">
-        {cards.map(([icon, label, val, href]) => (
-          <Link key={label} href={href} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:border-amber-300 transition">
-            <div className="text-3xl mb-2">{icon}</div>
-            <div className="text-2xl font-bold text-gray-800">{val}</div>
-            <div className="text-gray-500 text-sm">{label}</div>
+  return (
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">
+          Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, {session?.user?.name?.split(' ')[0]} 👋
+        </h1>
+        <p className="text-gray-500 text-sm mt-1">
+          {role === 'OWNER' ? 'Manage your dogs and upcoming walks' : 'Manage your walks and earnings'}
+        </p>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        {stats.map(([icon, label, val, href]) => (
+          <Link key={label} href={href}
+            className="card p-5 hover:border-amber-200 hover:shadow-md transition-all duration-200 group">
+            <div className="text-2xl mb-3">{icon}</div>
+            <div className="text-2xl font-bold text-gray-900 group-hover:text-amber-600 transition-colors">{val}</div>
+            <div className="text-gray-500 text-xs mt-0.5">{label}</div>
           </Link>
         ))}
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        {role === 'OWNER' ? (
-          <>
-            <Link href="/walkers" className="bg-amber-500 text-white rounded-2xl p-6 hover:bg-amber-600 transition">
-              <div className="text-2xl mb-2">🔍</div>
-              <div className="font-bold text-lg">Find a Walker</div>
-              <div className="text-amber-100 text-sm">Browse available dog walkers near you</div>
-            </Link>
-            <Link href="/profile/dogs" className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-amber-300 transition">
-              <div className="text-2xl mb-2">➕</div>
-              <div className="font-bold text-lg text-gray-800">Add a Dog</div>
-              <div className="text-gray-500 text-sm">Register your dog to book walks</div>
-            </Link>
-          </>
-        ) : (
-          <>
-            <Link href="/profile/walker" className="bg-amber-500 text-white rounded-2xl p-6 hover:bg-amber-600 transition">
-              <div className="text-2xl mb-2">✏️</div>
-              <div className="font-bold text-lg">Edit Profile</div>
-              <div className="text-amber-100 text-sm">Update your walker profile and rates</div>
-            </Link>
-            <Link href="/dogs" className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-amber-300 transition">
-              <div className="text-2xl mb-2">🐕</div>
-              <div className="font-bold text-lg text-gray-800">Browse Dogs</div>
-              <div className="text-gray-500 text-sm">See dogs that need walks</div>
-            </Link>
-          </>
-        )}
+      <div className="grid sm:grid-cols-2 gap-6">
+        {/* Quick actions */}
+        <div>
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Quick Actions</h2>
+          <div className="space-y-2">
+            {role === 'OWNER' ? (
+              <>
+                <Link href="/walkers" className="flex items-center gap-4 card p-4 hover:border-amber-200 hover:shadow-sm transition-all group">
+                  <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-xl group-hover:bg-amber-100 transition-colors">🔍</div>
+                  <div>
+                    <div className="font-semibold text-gray-800 text-sm">Find a walker</div>
+                    <div className="text-gray-400 text-xs">Browse available walkers near you</div>
+                  </div>
+                  <svg className="w-4 h-4 text-gray-300 ml-auto group-hover:text-amber-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </Link>
+                <Link href="/profile/dogs" className="flex items-center gap-4 card p-4 hover:border-amber-200 hover:shadow-sm transition-all group">
+                  <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-xl group-hover:bg-amber-100 transition-colors">➕</div>
+                  <div>
+                    <div className="font-semibold text-gray-800 text-sm">Manage my dogs</div>
+                    <div className="text-gray-400 text-xs">Add or edit your dog profiles</div>
+                  </div>
+                  <svg className="w-4 h-4 text-gray-300 ml-auto group-hover:text-amber-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/profile/walker" className="flex items-center gap-4 card p-4 hover:border-amber-200 hover:shadow-sm transition-all group">
+                  <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-xl group-hover:bg-amber-100 transition-colors">✏️</div>
+                  <div>
+                    <div className="font-semibold text-gray-800 text-sm">Edit my profile</div>
+                    <div className="text-gray-400 text-xs">Update your rates and availability</div>
+                  </div>
+                  <svg className="w-4 h-4 text-gray-300 ml-auto group-hover:text-amber-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </Link>
+                <Link href="/dogs" className="flex items-center gap-4 card p-4 hover:border-amber-200 hover:shadow-sm transition-all group">
+                  <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-xl group-hover:bg-amber-100 transition-colors">🐕</div>
+                  <div>
+                    <div className="font-semibold text-gray-800 text-sm">Browse dogs</div>
+                    <div className="text-gray-400 text-xs">Find dogs that need walks</div>
+                  </div>
+                  <svg className="w-4 h-4 text-gray-300 ml-auto group-hover:text-amber-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Recent bookings */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Recent Bookings</h2>
+            <Link href="/bookings" className="text-xs text-amber-600 font-medium hover:text-amber-700">View all →</Link>
+          </div>
+          {recentBookings.length === 0 ? (
+            <div className="card p-6 text-center text-gray-400 text-sm">No bookings yet</div>
+          ) : (
+            <div className="space-y-2">
+              {recentBookings.map(b => (
+                <div key={b.id} className="card p-4 flex items-center gap-3">
+                  <div className="w-9 h-9 bg-gray-50 rounded-xl flex items-center justify-center text-lg">🐶</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-gray-800 text-sm truncate">{b.dog.name}</div>
+                    <div className="text-gray-400 text-xs">{b.date}</div>
+                  </div>
+                  <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    b.status === 'PENDING' ? 'bg-yellow-50 text-yellow-600' :
+                    b.status === 'ACCEPTED' ? 'bg-green-50 text-green-600' :
+                    b.status === 'COMPLETED' ? 'bg-blue-50 text-blue-600' :
+                    'bg-red-50 text-red-600'
+                  }`}>{b.status}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
