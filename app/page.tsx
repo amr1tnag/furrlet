@@ -176,6 +176,8 @@ export default function Home() {
             </div>
             <p className="text-gray-400 text-sm">Made with ❤️ for dog lovers</p>
             <div className="flex gap-5 text-sm">
+              <Link href="/terms" className="text-gray-400 hover:text-gray-800 transition font-medium">Terms</Link>
+              <Link href="/privacy" className="text-gray-400 hover:text-gray-800 transition font-medium">Privacy</Link>
               <Link href="/auth/signin" className="text-gray-400 hover:text-gray-800 transition font-medium">Sign in</Link>
               <Link href="/auth/signup" className="text-amber-500 hover:text-amber-700 transition font-semibold">Get started →</Link>
             </div>
