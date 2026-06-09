@@ -15,6 +15,8 @@ export default function WalkerProfilePage() {
 
   useEffect(() => {
     if (status === 'unauthenticated') { router.push('/auth/signin'); return }
+    const role = (session?.user as any)?.role
+    if (status === 'authenticated' && role !== 'WALKER') { router.push('/dashboard'); return }
     const id = (session?.user as any)?.id
     if (!id) return
     fetch(`/api/walkers/${id}`).then(r => r.ok ? r.json() : null).then(p => {

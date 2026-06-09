@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
+import { sendWelcomeEmail } from '@/lib/email'
 
 export async function POST(req: Request) {
   const { name, email, password, role } = await req.json()
@@ -10,5 +11,6 @@ export async function POST(req: Request) {
   if (existing) return NextResponse.json({ error: 'Email already in use' }, { status: 400 })
   const hashed = await bcrypt.hash(password, 10)
   const user = await prisma.user.create({ data: { name, email, password: hashed, role } })
+  try { await sendWelcomeEmail({ name, email, role }) } catch (_) {}
   return NextResponse.json({ id: user.id, email: user.email, role: user.role })
 }

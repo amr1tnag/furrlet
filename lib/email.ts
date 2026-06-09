@@ -3,6 +3,31 @@ import { Resend } from 'resend'
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = 'Furrlet <notifications@furrlet.in>'
 
+export async function sendWelcomeEmail({ name, email, role }: { name: string; email: string; role: string }) {
+  const isWalker = role === 'WALKER'
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: `Welcome to Furrlet, ${name}! 🐾`,
+    html: `
+      <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fffbeb;border-radius:16px;">
+        <div style="font-size:40px;margin-bottom:16px;">🐾</div>
+        <h2 style="font-size:24px;font-weight:800;color:#111827;margin:0 0 8px;">Welcome to Furrlet, ${name}!</h2>
+        <p style="color:#6b7280;font-size:15px;margin:0 0 24px;">
+          ${isWalker
+            ? "You've joined as a <strong>Dog Walker</strong>. Set up your profile so dog owners can find and book you."
+            : "You've joined as a <strong>Dog Owner</strong>. Add your dogs and find a trusted walker near you."}
+        </p>
+        <a href="https://furrlet.in/${isWalker ? 'profile/walker' : 'profile/dogs'}"
+          style="display:block;text-align:center;background:#f59e0b;color:white;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;text-decoration:none;margin-bottom:24px;">
+          ${isWalker ? 'Set Up Your Profile →' : 'Add Your Dog →'}
+        </a>
+        <p style="color:#9ca3af;font-size:12px;text-align:center;">Furrlet · Making every tail wag 🐕</p>
+      </div>
+    `,
+  })
+}
+
 export async function sendBookingRequestEmail({ walkerEmail, walkerName, ownerName, dogName, date, duration, totalPrice }: {
   walkerEmail: string
   walkerName: string
