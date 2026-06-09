@@ -7,7 +7,7 @@ import Image from 'next/image'
 export default function WalkerProfilePage() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [form, setForm] = useState({ bio: '', hourlyRate: '', city: '', availability: '', photoUrl: '' })
+  const [form, setForm] = useState({ bio: '', hourlyRate: '', city: '', availability: '', photoUrl: '', upiId: '' })
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -26,7 +26,7 @@ export default function WalkerProfilePage() {
     if (!id) return
     fetch(`/api/walkers/${id}`).then(r => r.ok ? r.json() : null).then(p => {
       if (p) {
-        setForm({ bio: p.bio, hourlyRate: String(p.hourlyRate), city: p.city, availability: p.availability, photoUrl: p.photoUrl || '' })
+        setForm({ bio: p.bio, hourlyRate: String(p.hourlyRate), city: p.city, availability: p.availability, photoUrl: p.photoUrl || '', upiId: p.upiId || '' })
         setVerificationStatus(p.verificationStatus ?? 'NONE')
         setVerified(p.verified ?? false)
       }
@@ -175,6 +175,19 @@ export default function WalkerProfilePage() {
               placeholder="e.g. Weekdays 8am-6pm, Weekends flexible"
               className="input" />
           </div>
+
+          {/* UPI ID for payouts */}
+          <div>
+            <label className="label">UPI ID <span className="text-gray-400 font-normal">(for receiving payments)</span></label>
+            <div className="relative">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-lg">💸</span>
+              <input type="text" value={form.upiId} onChange={e => setForm(f => ({ ...f, upiId: e.target.value }))}
+                placeholder="yourname@upi"
+                className="input pl-10" />
+            </div>
+            <p className="text-xs text-gray-400 mt-1.5">Payouts will be sent here after each completed walk (85% of booking value).</p>
+          </div>
+
           <button type="submit" disabled={loading || uploading} className="btn-primary w-full py-3 text-base">
             {saved ? '✅ Saved!' : loading ? 'Saving...' : 'Save Profile'}
           </button>

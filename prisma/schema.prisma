@@ -37,6 +37,7 @@ model WalkerProfile {
   verified           Boolean @default(false)
   verificationStatus String  @default("NONE")
   aadhaarNumber      String  @default("")
+  upiId              String  @default("")
 }
 
 model Dog {
