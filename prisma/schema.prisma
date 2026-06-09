@@ -52,9 +52,21 @@ model Booking {
   dog        Dog      @relation(fields: [dogId], references: [id])
   ownerId    String
   owner      User     @relation("OwnerBookings", fields: [ownerId], references: [id])
-  status     String   @default("PENDING") // PENDING, ACCEPTED, DECLINED, COMPLETED
+  status     String   @default("PENDING")
   date       String
   duration   Int
   totalPrice Float
   createdAt  DateTime @default(now())
+  review     Review?
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  bookingId String   @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  walkerId  String
+  ownerId   String
+  rating    Int
+  comment   String   @default("")
+  createdAt DateTime @default(now())
 }

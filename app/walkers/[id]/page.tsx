@@ -6,6 +6,7 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
   const router = useRouter()
   const [walker, setWalker] = useState<any>(null)
   const [dogs, setDogs] = useState<any[]>([])
+  const [reviews, setReviews] = useState<any[]>([])
   const [form, setForm] = useState({ dogId: '', date: '', duration: '60' })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -13,6 +14,7 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
   useEffect(() => {
     fetch(`/api/walkers/${params.id}`).then(r => r.json()).then(setWalker)
     fetch('/api/dogs').then(r => r.json()).then(d => setDogs(Array.isArray(d) ? d : []))
+    fetch(`/api/reviews/${params.id}`).then(r => r.json()).then(d => setReviews(Array.isArray(d) ? d : []))
   }, [params.id])
 
   async function book(e: React.FormEvent) {
@@ -54,6 +56,25 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
           <p className="text-gray-600">{walker.availability}</p>
         </div>
       </div>
+
+      {/* Reviews */}
+      {reviews.length > 0 && (
+        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 mb-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Reviews ({reviews.length})</h2>
+          <div className="space-y-4">
+            {reviews.map(r => (
+              <div key={r.id} className="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-medium text-gray-700">{r.booking.owner.name}</span>
+                  <span className="text-yellow-400 text-sm">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                </div>
+                <p className="text-xs text-gray-400 mb-1">Walked {r.booking.dog.name} · {new Date(r.createdAt).toLocaleDateString()}</p>
+                {r.comment && <p className="text-gray-600 text-sm">{r.comment}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
         <h2 className="text-xl font-bold text-gray-800 mb-6">Book a Walk</h2>

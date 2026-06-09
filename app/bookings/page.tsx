@@ -9,16 +9,49 @@ const statusColor: Record<string, string> = {
   COMPLETED: 'bg-blue-100 text-blue-700',
 }
 
+function StarPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const [hover, setHover] = useState(0)
+  return (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map(s => (
+        <button key={s} type="button"
+          onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(0)}
+          onClick={() => onChange(s)}
+          className={`text-2xl transition ${(hover || value) >= s ? 'text-yellow-400' : 'text-gray-300'}`}>
+          ★
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export default function Bookings() {
   const { data: session } = useSession()
   const role = (session?.user as any)?.role
   const [bookings, setBookings] = useState<any[]>([])
+  const [reviewing, setReviewing] = useState<string | null>(null)
+  const [reviewForm, setReviewForm] = useState({ rating: 0, comment: '' })
+  const [submitting, setSubmitting] = useState(false)
 
   const load = () => fetch('/api/bookings').then(r => r.json()).then(d => setBookings(Array.isArray(d) ? d : []))
   useEffect(() => { if (session) load() }, [session])
 
   async function updateStatus(id: string, status: string) {
     await fetch(`/api/bookings/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) })
+    load()
+  }
+
+  async function submitReview(bookingId: string) {
+    if (!reviewForm.rating) return
+    setSubmitting(true)
+    await fetch('/api/reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bookingId, ...reviewForm }),
+    })
+    setReviewing(null)
+    setReviewForm({ rating: 0, comment: '' })
+    setSubmitting(false)
     load()
   }
 
@@ -49,6 +82,8 @@ export default function Bookings() {
                 <div><span className="font-medium">⏱ Duration:</span> {b.duration} min</div>
                 <div><span className="font-medium">💰 Price:</span> ${b.totalPrice.toFixed(2)}</div>
               </div>
+
+              {/* Walker actions */}
               {role === 'WALKER' && b.status === 'PENDING' && (
                 <div className="flex gap-2">
                   <button onClick={() => updateStatus(b.id, 'ACCEPTED')} className="bg-green-500 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-green-600 transition">Accept</button>
@@ -57,6 +92,37 @@ export default function Bookings() {
               )}
               {role === 'WALKER' && b.status === 'ACCEPTED' && (
                 <button onClick={() => updateStatus(b.id, 'COMPLETED')} className="bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-blue-600 transition">Mark Completed</button>
+              )}
+
+              {/* Owner review */}
+              {role === 'OWNER' && b.status === 'COMPLETED' && (
+                b.review ? (
+                  <div className="mt-3 bg-yellow-50 rounded-xl p-3">
+                    <div className="text-yellow-500 text-sm font-medium mb-1">
+                      {'★'.repeat(b.review.rating)}{'☆'.repeat(5 - b.review.rating)} Your review
+                    </div>
+                    {b.review.comment && <p className="text-gray-600 text-sm">{b.review.comment}</p>}
+                  </div>
+                ) : reviewing === b.id ? (
+                  <div className="mt-3 bg-amber-50 rounded-xl p-4">
+                    <p className="text-sm font-medium text-gray-700 mb-2">Rate your experience</p>
+                    <StarPicker value={reviewForm.rating} onChange={r => setReviewForm(f => ({ ...f, rating: r }))} />
+                    <textarea rows={2} value={reviewForm.comment} onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))}
+                      placeholder="Leave a comment (optional)..."
+                      className="w-full mt-2 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                    <div className="flex gap-2 mt-2">
+                      <button onClick={() => submitReview(b.id)} disabled={!reviewForm.rating || submitting}
+                        className="bg-amber-500 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-amber-600 transition disabled:opacity-50">
+                        {submitting ? 'Submitting...' : 'Submit Review'}
+                      </button>
+                      <button onClick={() => setReviewing(null)} className="text-gray-500 text-sm hover:text-gray-700">Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <button onClick={() => setReviewing(b.id)} className="mt-2 text-amber-500 text-sm font-medium hover:text-amber-600 transition">
+                    ⭐ Leave a review
+                  </button>
+                )
               )}
             </div>
           ))}
