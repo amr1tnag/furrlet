@@ -2,11 +2,11 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 
-const statusColor: Record<string, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-700',
-  ACCEPTED: 'bg-green-100 text-green-700',
-  DECLINED: 'bg-red-100 text-red-700',
-  COMPLETED: 'bg-blue-100 text-blue-700',
+const statusConfig: Record<string, { label: string; classes: string; icon: string }> = {
+  PENDING:   { label: 'Pending',   classes: 'bg-yellow-50 text-yellow-700 border border-yellow-100', icon: '🕐' },
+  ACCEPTED:  { label: 'Accepted',  classes: 'bg-green-50 text-green-700 border border-green-100',   icon: '✅' },
+  DECLINED:  { label: 'Declined',  classes: 'bg-red-50 text-red-600 border border-red-100',          icon: '❌' },
+  COMPLETED: { label: 'Completed', classes: 'bg-blue-50 text-blue-700 border border-blue-100',       icon: '🏁' },
 }
 
 function StarPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
@@ -17,7 +17,7 @@ function StarPicker({ value, onChange }: { value: number; onChange: (v: number) 
         <button key={s} type="button"
           onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(0)}
           onClick={() => onChange(s)}
-          className={`text-2xl transition ${(hover || value) >= s ? 'text-yellow-400' : 'text-gray-300'}`}>
+          className={`text-2xl transition-transform hover:scale-110 ${(hover || value) >= s ? 'text-yellow-400' : 'text-gray-200'}`}>
           ★
         </button>
       ))}
@@ -32,12 +32,15 @@ export default function Bookings() {
   const [reviewing, setReviewing] = useState<string | null>(null)
   const [reviewForm, setReviewForm] = useState({ rating: 0, comment: '' })
   const [submitting, setSubmitting] = useState(false)
+  const [acting, setActing] = useState<string | null>(null)
 
   const load = () => fetch('/api/bookings').then(r => r.json()).then(d => setBookings(Array.isArray(d) ? d : []))
   useEffect(() => { if (session) load() }, [session])
 
   async function updateStatus(id: string, status: string) {
+    setActing(id + status)
     await fetch(`/api/bookings/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) })
+    setActing(null)
     load()
   }
 
@@ -55,79 +58,167 @@ export default function Bookings() {
     load()
   }
 
+  const pending = bookings.filter(b => b.status === 'PENDING')
+  const others = bookings.filter(b => b.status !== 'PENDING')
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-2">Bookings</h1>
-      <p className="text-gray-500 mb-8">{role === 'WALKER' ? 'Manage your walk requests' : 'Track your booking history'}</p>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+      <div className="mb-8">
+        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Bookings</h1>
+        <p className="text-gray-500 text-sm mt-1">{role === 'WALKER' ? 'Manage your walk requests' : 'Track your booking history'}</p>
+      </div>
+
       {bookings.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <div className="text-5xl mb-3">📅</div>
-          <p>No bookings yet.</p>
+        <div className="card p-16 text-center">
+          <div className="text-5xl mb-4">📅</div>
+          <p className="text-gray-600 font-semibold">No bookings yet</p>
+          <p className="text-gray-400 text-sm mt-1">{role === 'WALKER' ? 'Booking requests will appear here' : 'Book a walker to get started'}</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {bookings.map(b => (
-            <div key={b.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <div className="font-bold text-gray-800 text-lg">{b.dog.name} the {b.dog.breed}</div>
-                  <div className="text-gray-500 text-sm">
-                    {role === 'OWNER' ? `Walker: ${b.walker?.name}` : `Owner: ${b.owner?.name}`}
-                  </div>
-                </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColor[b.status]}`}>{b.status}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-4 text-sm text-gray-600 mb-4">
-                <div><span className="font-medium">📅 Date:</span> {b.date}</div>
-                <div><span className="font-medium">⏱ Duration:</span> {b.duration} min</div>
-                <div><span className="font-medium">💰 Price:</span> ${b.totalPrice.toFixed(2)}</div>
-              </div>
-
-              {/* Walker actions */}
-              {role === 'WALKER' && b.status === 'PENDING' && (
-                <div className="flex gap-2">
-                  <button onClick={() => updateStatus(b.id, 'ACCEPTED')} className="bg-green-500 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-green-600 transition">Accept</button>
-                  <button onClick={() => updateStatus(b.id, 'DECLINED')} className="bg-red-500 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-red-600 transition">Decline</button>
+        <div className="space-y-8">
+          {/* Pending requests — shown first and highlighted for walkers */}
+          {pending.length > 0 && (
+            <div>
+              {role === 'WALKER' && (
+                <div className="flex items-center gap-2 mb-4">
+                  <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Action Required</h2>
+                  <span className="w-5 h-5 bg-amber-500 text-white text-xs font-bold rounded-full flex items-center justify-center">{pending.length}</span>
                 </div>
               )}
-              {role === 'WALKER' && b.status === 'ACCEPTED' && (
-                <button onClick={() => updateStatus(b.id, 'COMPLETED')} className="bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-blue-600 transition">Mark Completed</button>
-              )}
+              <div className="space-y-4">
+                {pending.map(b => <BookingCard key={b.id} b={b} role={role} reviewing={reviewing} setReviewing={setReviewing} reviewForm={reviewForm} setReviewForm={setReviewForm} submitting={submitting} submitReview={submitReview} updateStatus={updateStatus} acting={acting} />)}
+              </div>
+            </div>
+          )}
 
-              {/* Owner review */}
-              {role === 'OWNER' && b.status === 'COMPLETED' && (
-                b.review ? (
-                  <div className="mt-3 bg-yellow-50 rounded-xl p-3">
-                    <div className="text-yellow-500 text-sm font-medium mb-1">
-                      {'★'.repeat(b.review.rating)}{'☆'.repeat(5 - b.review.rating)} Your review
-                    </div>
-                    {b.review.comment && <p className="text-gray-600 text-sm">{b.review.comment}</p>}
-                  </div>
-                ) : reviewing === b.id ? (
-                  <div className="mt-3 bg-amber-50 rounded-xl p-4">
-                    <p className="text-sm font-medium text-gray-700 mb-2">Rate your experience</p>
-                    <StarPicker value={reviewForm.rating} onChange={r => setReviewForm(f => ({ ...f, rating: r }))} />
-                    <textarea rows={2} value={reviewForm.comment} onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))}
-                      placeholder="Leave a comment (optional)..."
-                      className="w-full mt-2 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
-                    <div className="flex gap-2 mt-2">
-                      <button onClick={() => submitReview(b.id)} disabled={!reviewForm.rating || submitting}
-                        className="bg-amber-500 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-amber-600 transition disabled:opacity-50">
-                        {submitting ? 'Submitting...' : 'Submit Review'}
-                      </button>
-                      <button onClick={() => setReviewing(null)} className="text-gray-500 text-sm hover:text-gray-700">Cancel</button>
-                    </div>
-                  </div>
-                ) : (
-                  <button onClick={() => setReviewing(b.id)} className="mt-2 text-amber-500 text-sm font-medium hover:text-amber-600 transition">
-                    ⭐ Leave a review
-                  </button>
-                )
-              )}
+          {/* Other bookings */}
+          {others.length > 0 && (
+            <div>
+              {pending.length > 0 && <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">History</h2>}
+              <div className="space-y-4">
+                {others.map(b => <BookingCard key={b.id} b={b} role={role} reviewing={reviewing} setReviewing={setReviewing} reviewForm={reviewForm} setReviewForm={setReviewForm} submitting={submitting} submitReview={submitReview} updateStatus={updateStatus} acting={acting} />)}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewForm, submitting, submitReview, updateStatus, acting }: any) {
+  const st = statusConfig[b.status] ?? statusConfig.PENDING
+  const isPending = b.status === 'PENDING'
+
+  return (
+    <div className={`card overflow-hidden transition-all duration-200 hover:shadow-card-hover ${role === 'WALKER' && isPending ? 'border-amber-200 shadow-[0_0_0_2px_rgba(251,191,36,0.15)]' : ''}`}>
+      {/* Top accent for pending walker bookings */}
+      {role === 'WALKER' && isPending && (
+        <div className="h-1 bg-gradient-to-r from-amber-400 to-orange-400" />
+      )}
+
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">🐶</div>
+            <div>
+              <div className="font-bold text-gray-900">{b.dog.name}
+                <span className="text-gray-400 font-normal text-sm"> · {b.dog.breed}</span>
+              </div>
+              <div className="text-gray-500 text-sm mt-0.5">
+                {role === 'OWNER' ? `Walker: ${b.walker?.name}` : `Owner: ${b.owner?.name}`}
+              </div>
+            </div>
+          </div>
+          <span className={`text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 ${st.classes}`}>
+            <span>{st.icon}</span>{st.label}
+          </span>
+        </div>
+
+        {/* Details */}
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          {[
+            { icon: '📅', label: 'Date', value: b.date },
+            { icon: '⏱', label: 'Duration', value: `${b.duration} min` },
+            { icon: '💰', label: 'Total', value: `$${b.totalPrice.toFixed(2)}` },
+          ].map(({ icon, label, value }) => (
+            <div key={label} className="bg-gray-50 rounded-xl p-3">
+              <div className="text-xs text-gray-400 mb-0.5">{icon} {label}</div>
+              <div className="font-semibold text-gray-800 text-sm">{value}</div>
             </div>
           ))}
         </div>
-      )}
+
+        {/* Walker actions */}
+        {role === 'WALKER' && isPending && (
+          <div className="flex gap-3 pt-2 border-t border-gray-50">
+            <button
+              onClick={() => updateStatus(b.id, 'ACCEPTED')}
+              disabled={!!acting}
+              className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all active:scale-95 disabled:opacity-50 shadow-sm">
+              {acting === b.id + 'ACCEPTED' ? '...' : '✓ Accept'}
+            </button>
+            <button
+              onClick={() => updateStatus(b.id, 'DECLINED')}
+              disabled={!!acting}
+              className="flex-1 flex items-center justify-center gap-2 bg-white hover:bg-red-50 text-red-500 border border-red-200 font-semibold py-2.5 rounded-xl text-sm transition-all active:scale-95 disabled:opacity-50">
+              {acting === b.id + 'DECLINED' ? '...' : '✕ Decline'}
+            </button>
+          </div>
+        )}
+
+        {role === 'WALKER' && b.status === 'ACCEPTED' && (
+          <div className="pt-2 border-t border-gray-50">
+            <button
+              onClick={() => updateStatus(b.id, 'COMPLETED')}
+              disabled={!!acting}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-xl text-sm transition-all active:scale-95 disabled:opacity-50 shadow-sm">
+              {acting === b.id + 'COMPLETED' ? 'Updating...' : '🏁 Mark as Completed'}
+            </button>
+          </div>
+        )}
+
+        {/* Owner review */}
+        {role === 'OWNER' && b.status === 'COMPLETED' && (
+          b.review ? (
+            <div className="pt-4 border-t border-gray-50">
+              <div className="bg-amber-50 rounded-xl p-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="text-yellow-400 text-sm">{'★'.repeat(b.review.rating)}{'☆'.repeat(5 - b.review.rating)}</div>
+                  <span className="text-xs text-gray-400 font-medium">Your review</span>
+                </div>
+                {b.review.comment && <p className="text-gray-600 text-sm">{b.review.comment}</p>}
+              </div>
+            </div>
+          ) : reviewing === b.id ? (
+            <div className="pt-4 border-t border-gray-50">
+              <div className="bg-amber-50 rounded-xl p-4">
+                <p className="text-sm font-semibold text-gray-700 mb-3">How was the walk?</p>
+                <StarPicker value={reviewForm.rating} onChange={r => setReviewForm((f: any) => ({ ...f, rating: r }))} />
+                <textarea rows={2} value={reviewForm.comment}
+                  onChange={e => setReviewForm((f: any) => ({ ...f, comment: e.target.value }))}
+                  placeholder="Leave a comment (optional)..."
+                  className="input mt-3 resize-none text-sm" />
+                <div className="flex gap-2 mt-3">
+                  <button onClick={() => submitReview(b.id)} disabled={!reviewForm.rating || submitting}
+                    className="btn-primary disabled:opacity-50 text-sm py-2">
+                    {submitting ? 'Submitting...' : 'Submit Review'}
+                  </button>
+                  <button onClick={() => setReviewing(null)} className="btn-secondary text-sm py-2">Cancel</button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="pt-3 border-t border-gray-50">
+              <button onClick={() => setReviewing(b.id)}
+                className="flex items-center gap-1.5 text-amber-500 text-sm font-semibold hover:text-amber-700 transition-colors">
+                <span>⭐</span> Leave a review
+              </button>
+            </div>
+          )
+        )}
+      </div>
     </div>
   )
 }
