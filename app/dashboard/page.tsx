@@ -78,7 +78,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
         {stats.map((s, i) => (
           <Link key={s.label} href={s.href}
             className="card group relative overflow-hidden hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300"
@@ -91,15 +91,15 @@ export default function Dashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </div>
-              <div className="text-2xl font-black text-gray-900">{s.value}</div>
-              <div className="text-xs text-gray-400 mt-0.5">{s.label}</div>
+              <div className="text-xl sm:text-2xl font-black text-gray-900">{s.value}</div>
+              <div className="text-xs text-gray-400 mt-0.5 truncate">{s.label}</div>
             </div>
             <div className={`h-0.5 bg-gradient-to-r ${s.color} scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left`} />
           </Link>
         ))}
       </div>
 
-      <div className="grid sm:grid-cols-5 gap-6">
+      <div className="grid sm:grid-cols-5 gap-4 sm:gap-6">
         {/* Quick actions */}
         <div className="sm:col-span-3">
           <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Quick Actions</h2>

@@ -43,7 +43,7 @@ export default function Home() {
           </div>
 
           {/* Floating dog cards */}
-          <div className="animate-fade-up delay-400 flex flex-wrap justify-center gap-3">
+          <div className="animate-fade-up delay-400 hidden sm:flex flex-wrap justify-center gap-3">
             {[
               { emoji: '🐕', name: 'Buddy', type: 'Golden Retriever' },
               { emoji: '🐩', name: 'Mochi', type: 'Shih Tzu' },
@@ -68,7 +68,7 @@ export default function Home() {
 
       {/* Stats bar */}
       <section className="border-y border-gray-100 bg-white">
-        <div className="max-w-4xl mx-auto px-4 py-10 grid grid-cols-3 gap-8 text-center">
+        <div className="max-w-4xl mx-auto px-4 py-10 grid grid-cols-3 gap-4 sm:gap-8 text-center">
           {[
             { num: '500+', label: 'Happy dogs walked', icon: '🐕' },
             { num: '200+', label: 'Verified walkers', icon: '🦮' },

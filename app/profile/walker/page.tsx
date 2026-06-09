@@ -54,7 +54,7 @@ export default function WalkerProfilePage() {
         <p className="text-gray-500 text-sm mt-1">Set up your profile so dog owners can find and book you</p>
       </div>
 
-      <div className="card p-8">
+      <div className="card p-5 sm:p-8">
         {/* Photo upload */}
         <div className="mb-8 flex flex-col items-center gap-4">
           <div

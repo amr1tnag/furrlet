@@ -91,9 +91,9 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
       {/* Walker info card */}
-      <div className="card p-8 mb-6">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl overflow-hidden flex items-center justify-center text-4xl flex-shrink-0 shadow-sm">
+      <div className="card p-5 sm:p-8 mb-6">
+        <div className="flex items-start gap-3 sm:gap-4 mb-6">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-amber-100 to-orange-100 rounded-3xl overflow-hidden flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0 shadow-sm">
             {walker.photoUrl
               ? <Image src={walker.photoUrl} alt={walker.user.name} width={80} height={80} className="object-cover w-full h-full" />
               : '🦮'}
@@ -152,7 +152,7 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
 
       {/* Reviews */}
       {reviews.length > 0 && (
-        <div className="card p-6 mb-6">
+        <div className="card p-5 sm:p-6 mb-6">
           <h2 className="font-black text-gray-900 mb-4">Reviews <span className="text-gray-400 font-normal text-sm">({reviews.length})</span></h2>
           <div className="space-y-4">
             {reviews.map(r => (
@@ -199,7 +199,7 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
             </div>
             <div>
               <label className="label">Duration</label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[['30', '30 min'], ['60', '1 hr'], ['90', '1.5 hr'], ['120', '2 hr']].map(([v, l]) => (
                   <button key={v} type="button" onClick={() => setForm(f => ({ ...f, duration: v }))}
                     className={`py-2.5 rounded-xl border-2 text-sm font-semibold transition-all ${

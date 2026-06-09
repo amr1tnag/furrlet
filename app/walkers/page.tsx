@@ -93,8 +93,8 @@ export default function Walkers() {
       </div>
 
       {/* Search + Filter bar */}
-      <div className="card p-4 mb-6">
-        <div className="flex flex-col sm:flex-row gap-3">
+      <div className="card p-3 sm:p-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           {/* Search */}
           <div className="relative flex-1">
             <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

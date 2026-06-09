@@ -138,15 +138,15 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
         </div>
 
         {/* Details */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
           {[
             { icon: '📅', label: 'Date', value: b.date },
             { icon: '⏱', label: 'Duration', value: `${b.duration} min` },
             { icon: '💰', label: 'Total', value: `₹${b.totalPrice.toFixed(2)}` },
           ].map(({ icon, label, value }) => (
-            <div key={label} className="bg-gray-50 rounded-xl p-3">
-              <div className="text-xs text-gray-400 mb-0.5">{icon} {label}</div>
-              <div className="font-semibold text-gray-800 text-sm">{value}</div>
+            <div key={label} className="bg-gray-50 rounded-xl p-2.5 sm:p-3">
+              <div className="text-xs text-gray-400 mb-0.5">{icon} <span className="hidden sm:inline">{label}</span></div>
+              <div className="font-semibold text-gray-800 text-xs sm:text-sm">{value}</div>
             </div>
           ))}
         </div>
