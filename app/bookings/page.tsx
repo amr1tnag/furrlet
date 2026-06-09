@@ -7,6 +7,7 @@ const statusConfig: Record<string, { label: string; classes: string; icon: strin
   ACCEPTED:  { label: 'Accepted',  classes: 'bg-green-50 text-green-700 border border-green-100',   icon: '✅' },
   DECLINED:  { label: 'Declined',  classes: 'bg-red-50 text-red-600 border border-red-100',          icon: '❌' },
   COMPLETED: { label: 'Completed', classes: 'bg-blue-50 text-blue-700 border border-blue-100',       icon: '🏁' },
+  CANCELLED: { label: 'Cancelled', classes: 'bg-gray-100 text-gray-500 border border-gray-200',      icon: '🚫' },
 }
 
 function StarPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
@@ -149,6 +150,20 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
             </div>
           ))}
         </div>
+
+        {/* Owner cancel */}
+        {role === 'OWNER' && (b.status === 'PENDING' || b.status === 'ACCEPTED') && (
+          <div className="pt-2 border-t border-gray-50 flex justify-end">
+            <button
+              onClick={() => {
+                if (confirm('Cancel this booking?')) updateStatus(b.id, 'CANCELLED')
+              }}
+              disabled={!!acting}
+              className="text-xs text-gray-400 hover:text-red-500 font-semibold transition-colors flex items-center gap-1 disabled:opacity-50">
+              🚫 Cancel booking
+            </button>
+          </div>
+        )}
 
         {/* Walker actions */}
         {role === 'WALKER' && isPending && (
