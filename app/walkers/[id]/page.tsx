@@ -99,7 +99,14 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
               : '🦮'}
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-black text-gray-900">{walker.user.name}</h1>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-2xl font-black text-gray-900">{walker.user.name}</h1>
+              {walker.verified && (
+                <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-600 border border-blue-200 text-xs font-bold px-2 py-1 rounded-lg">
+                  ✓ Verified
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-1.5 text-gray-400 text-sm mt-0.5">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

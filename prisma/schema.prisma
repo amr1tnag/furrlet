@@ -23,16 +23,19 @@ model User {
 }
 
 model WalkerProfile {
-  id           String  @id @default(cuid())
-  userId       String  @unique
-  user         User    @relation(fields: [userId], references: [id])
-  bio          String
-  hourlyRate   Float
-  city         String
-  availability String
-  rating       Float   @default(0)
-  reviewCount  Int     @default(0)
-  photoUrl     String  @default("")
+  id                 String  @id @default(cuid())
+  userId             String  @unique
+  user               User    @relation(fields: [userId], references: [id])
+  bio                String
+  hourlyRate         Float
+  city               String
+  availability       String
+  rating             Float   @default(0)
+  reviewCount        Int     @default(0)
+  photoUrl           String  @default("")
+  verified           Boolean @default(false)
+  verificationStatus String  @default("NONE") // "NONE", "PENDING", "VERIFIED", "REJECTED"
+  aadhaarNumber      String  @default("")
 }
 
 model Dog {

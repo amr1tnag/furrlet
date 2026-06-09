@@ -92,6 +92,30 @@ export async function sendBookingStatusEmail({ ownerEmail, ownerName, walkerName
   })
 }
 
+export async function sendVerificationRequestEmail({ walkerName, walkerEmail, aadhaarNumber }: {
+  walkerName: string
+  walkerEmail: string
+  aadhaarNumber: string
+}) {
+  await resend.emails.send({
+    from: FROM,
+    to: 'amritnag2005@gmail.com',
+    subject: `Verification request from ${walkerName}`,
+    html: `
+      <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fffbeb;border-radius:16px;">
+        <div style="font-size:32px;margin-bottom:16px;">🪪</div>
+        <h2 style="font-size:22px;font-weight:800;color:#111827;margin:0 0 8px;">New Verification Request</h2>
+        <div style="background:white;border-radius:12px;padding:20px;border:1px solid #f3f4f6;margin:20px 0;">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Walker</span><span style="font-weight:600;font-size:14px;color:#111827;">${walkerName}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Email</span><span style="font-weight:600;font-size:14px;color:#111827;">${walkerEmail}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:#6b7280;font-size:14px;">Aadhaar</span><span style="font-weight:600;font-size:14px;color:#111827;font-family:monospace;">XXXX XXXX ${aadhaarNumber.slice(-4)}</span></div>
+        </div>
+        <a href="https://furrlet.in/admin" style="display:block;text-align:center;background:#f59e0b;color:white;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;text-decoration:none;">Review in Admin Panel →</a>
+      </div>
+    `,
+  })
+}
+
 export async function sendRefundEmail({ ownerEmail, ownerName, dogName, date, amount }: {
   ownerEmail: string
   ownerName: string

@@ -217,7 +217,14 @@ export default function Walkers() {
                     ) : '🦮'}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="font-bold text-gray-900 truncate text-base">{w.user.name}</div>
+                    <div className="font-bold text-gray-900 truncate text-base flex items-center gap-1.5">
+                      {w.user.name}
+                      {w.verified && (
+                        <span title="Verified walker" className="inline-flex items-center gap-0.5 bg-blue-50 text-blue-600 border border-blue-200 text-xs font-bold px-1.5 py-0.5 rounded-md flex-shrink-0">
+                          ✓ Verified
+                        </span>
+                      )}
+                    </div>
                     <div className="text-gray-400 text-xs flex items-center gap-1 mt-0.5">
                       <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

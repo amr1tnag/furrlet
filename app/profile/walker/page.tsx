@@ -12,6 +12,11 @@ export default function WalkerProfilePage() {
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+  const [verificationStatus, setVerificationStatus] = useState('NONE')
+  const [verified, setVerified] = useState(false)
+  const [aadhaar, setAadhaar] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [verifyDone, setVerifyDone] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') { router.push('/auth/signin'); return }
@@ -20,7 +25,11 @@ export default function WalkerProfilePage() {
     const id = (session?.user as any)?.id
     if (!id) return
     fetch(`/api/walkers/${id}`).then(r => r.ok ? r.json() : null).then(p => {
-      if (p) setForm({ bio: p.bio, hourlyRate: String(p.hourlyRate), city: p.city, availability: p.availability, photoUrl: p.photoUrl || '' })
+      if (p) {
+        setForm({ bio: p.bio, hourlyRate: String(p.hourlyRate), city: p.city, availability: p.availability, photoUrl: p.photoUrl || '' })
+        setVerificationStatus(p.verificationStatus ?? 'NONE')
+        setVerified(p.verified ?? false)
+      }
     })
   }, [session, status, router])
 
@@ -38,6 +47,19 @@ export default function WalkerProfilePage() {
     setUploading(false)
   }
 
+  async function submitVerification(e: React.FormEvent) {
+    e.preventDefault()
+    setVerifying(true)
+    await fetch('/api/verification', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ aadhaarNumber: aadhaar.replace(/\s/g, '') }),
+    })
+    setVerificationStatus('PENDING')
+    setVerifyDone(true)
+    setVerifying(false)
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
@@ -53,6 +75,35 @@ export default function WalkerProfilePage() {
         <h1 className="text-3xl font-black text-gray-900 tracking-tight">Walker Profile</h1>
         <p className="text-gray-500 text-sm mt-1">Set up your profile so dog owners can find and book you</p>
       </div>
+
+      {/* Verification status banner */}
+      {verified && (
+        <div className="mb-6 bg-blue-50 border border-blue-200 rounded-2xl px-5 py-4 flex items-center gap-3">
+          <span className="text-2xl">✅</span>
+          <div>
+            <div className="font-bold text-blue-800">You&apos;re verified!</div>
+            <div className="text-blue-600 text-sm">Your profile shows a verified badge to dog owners.</div>
+          </div>
+        </div>
+      )}
+      {verificationStatus === 'PENDING' && (
+        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-2xl px-5 py-4 flex items-center gap-3">
+          <span className="text-2xl">🕐</span>
+          <div>
+            <div className="font-bold text-yellow-800">Verification pending</div>
+            <div className="text-yellow-700 text-sm">We&apos;ll review your Aadhaar and verify your account shortly.</div>
+          </div>
+        </div>
+      )}
+      {verificationStatus === 'REJECTED' && (
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-2xl px-5 py-4 flex items-center gap-3">
+          <span className="text-2xl">❌</span>
+          <div>
+            <div className="font-bold text-red-800">Verification rejected</div>
+            <div className="text-red-600 text-sm">Please contact support for more information.</div>
+          </div>
+        </div>
+      )}
 
       <div className="card p-5 sm:p-8">
         {/* Photo upload */}
@@ -129,6 +180,45 @@ export default function WalkerProfilePage() {
           </button>
         </form>
       </div>
+
+      {/* Verification card — only shown if not yet verified/pending */}
+      {verificationStatus === 'NONE' && (
+        <div className="card p-5 sm:p-8 mt-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 bg-blue-50 rounded-2xl flex items-center justify-center text-xl">🪪</div>
+            <div>
+              <h2 className="font-bold text-gray-900">Get Verified</h2>
+              <p className="text-gray-400 text-sm">A verified badge builds trust with dog owners</p>
+            </div>
+          </div>
+          {verifyDone ? (
+            <div className="text-center py-6">
+              <div className="text-4xl mb-3">🎉</div>
+              <p className="font-bold text-gray-800">Request submitted!</p>
+              <p className="text-gray-400 text-sm mt-1">We&apos;ll review your Aadhaar and get back to you.</p>
+            </div>
+          ) : (
+            <form onSubmit={submitVerification} className="space-y-4">
+              <div>
+                <label className="label">Aadhaar Number</label>
+                <input
+                  type="text"
+                  required
+                  maxLength={14}
+                  value={aadhaar}
+                  onChange={e => setAadhaar(e.target.value)}
+                  placeholder="XXXX XXXX XXXX"
+                  className="input font-mono tracking-widest"
+                />
+                <p className="text-xs text-gray-400 mt-1.5">Your Aadhaar number is stored securely and only visible to Furrlet admins.</p>
+              </div>
+              <button type="submit" disabled={verifying || aadhaar.replace(/\s/g,'').length !== 12} className="btn-primary w-full py-3 disabled:opacity-50">
+                {verifying ? 'Submitting...' : 'Request Verification'}
+              </button>
+            </form>
+          )}
+        </div>
+      )}
     </div>
   )
 }
