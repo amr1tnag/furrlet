@@ -70,6 +70,8 @@ model Booking {
   walkStartedAt  DateTime?
   lat           Float?
   lng           Float?
+  startOtp      String?
+  endOtp        String?
   review        Review?
   messages      Message[]
 }

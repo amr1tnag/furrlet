@@ -24,7 +24,12 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   if (booking.ownerId !== user.id && booking.walkerId !== user.id)
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  return NextResponse.json(booking)
+  // Only expose each OTP to the party that needs to see it
+  return NextResponse.json({
+    ...booking,
+    startOtp: booking.ownerId === user.id ? booking.startOtp : undefined,
+    endOtp: booking.walkerId === user.id ? booking.endOtp : undefined,
+  })
 }
 
 function getRazorpay() {
@@ -61,9 +66,16 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     }
   }
 
+  const otp4 = () => String(Math.floor(1000 + Math.random() * 9000))
+
   const booking = await prisma.booking.update({
     where: { id: params.id },
-    data: { status, paymentStatus },
+    data: {
+      status,
+      paymentStatus,
+      // Generate start OTP when walker accepts
+      ...(status === 'ACCEPTED' ? { startOtp: otp4() } : {}),
+    },
     include: {
       dog: true,
       owner: { select: { name: true, email: true } },
