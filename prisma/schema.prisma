@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   // "WALKER" or "OWNER"
+  createdAt DateTime @default(now())
+
+  walkerProfile  WalkerProfile?
+  dogs           Dog[]
+  bookingsAsOwner  Booking[] @relation("OwnerBookings")
+  bookingsAsWalker Booking[] @relation("WalkerBookings")
+}
+
+model WalkerProfile {
+  id           String  @id @default(cuid())
+  userId       String  @unique
+  user         User    @relation(fields: [userId], references: [id])
+  bio          String
+  hourlyRate   Float
+  city         String
+  availability String
+  rating       Float   @default(0)
+  reviewCount  Int     @default(0)
+}
+
+model Dog {
+  id       String @id @default(cuid())
+  ownerId  String
+  owner    User   @relation(fields: [ownerId], references: [id])
+  name     String
+  breed    String
+  size     String // "SMALL", "MEDIUM", "LARGE"
+  notes    String @default("")
+  bookings Booking[]
+}
+
+model Booking {
+  id         String   @id @default(cuid())
+  walkerId   String
+  walker     User     @relation("WalkerBookings", fields: [walkerId], references: [id])
+  dogId      String
+  dog        Dog      @relation(fields: [dogId], references: [id])
+  ownerId    String
+  owner      User     @relation("OwnerBookings", fields: [ownerId], references: [id])
+  status     String   @default("PENDING") // PENDING, ACCEPTED, DECLINED, COMPLETED
+  date       String
+  duration   Int
+  totalPrice Float
+  createdAt  DateTime @default(now())
+}
