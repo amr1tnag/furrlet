@@ -166,45 +166,95 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 bg-white py-10 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🐾</span>
-              <span className="font-black text-gray-900 text-lg">Furrlet</span>
-              <span className="text-gray-300 text-sm ml-2">© 2026</span>
+      <footer className="bg-gray-900 text-gray-300 pt-14 pb-0 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-12">
+
+            {/* Brand column */}
+            <div className="lg:col-span-1">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-2xl">🐾</span>
+                <span className="font-black text-white text-xl">Furrlet</span>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                India&apos;s trusted dog walking marketplace. Find verified walkers or earn money doing what you love.
+              </p>
+              {/* Social icons */}
+              <div className="flex gap-3">
+                <a href="https://instagram.com/furrlet.in" target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gray-800 hover:bg-amber-500 rounded-xl flex items-center justify-center transition-colors text-sm">
+                  📸
+                </a>
+                <a href="mailto:furrlet.in@gmail.com"
+                  className="w-9 h-9 bg-gray-800 hover:bg-amber-500 rounded-xl flex items-center justify-center transition-colors text-sm">
+                  ✉️
+                </a>
+                <a href="tel:+917208784418"
+                  className="w-9 h-9 bg-gray-800 hover:bg-amber-500 rounded-xl flex items-center justify-center transition-colors text-sm">
+                  📞
+                </a>
+              </div>
             </div>
-            <p className="text-gray-400 text-sm">Made with ❤️ for dog lovers</p>
-            <div className="flex gap-5 text-sm">
-              <Link href="/terms" className="text-gray-400 hover:text-gray-800 transition font-medium">Terms</Link>
-              <Link href="/privacy" className="text-gray-400 hover:text-gray-800 transition font-medium">Privacy</Link>
-              <Link href="/auth/signin" className="text-gray-400 hover:text-gray-800 transition font-medium">Sign in</Link>
-              <Link href="/auth/signup" className="text-amber-500 hover:text-amber-700 transition font-semibold">Get started →</Link>
+
+            {/* Cities */}
+            <div>
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Cities</h3>
+              <ul className="space-y-2.5 text-sm">
+                {['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Hyderabad', 'Chennai', 'Kolkata'].map(city => (
+                  <li key={city}>
+                    <Link href={`/walkers?q=${city}`} className="text-gray-400 hover:text-white transition-colors">{city}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Platform */}
+            <div>
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Platform</h3>
+              <ul className="space-y-2.5 text-sm">
+                <li><Link href="/walkers" className="text-gray-400 hover:text-white transition-colors">Find a Walker</Link></li>
+                <li><Link href="/auth/signup" className="text-gray-400 hover:text-white transition-colors">Become a Walker</Link></li>
+                <li><Link href="/auth/signin" className="text-gray-400 hover:text-white transition-colors">Sign In</Link></li>
+                <li><Link href="/bookings" className="text-gray-400 hover:text-white transition-colors">My Bookings</Link></li>
+                <li><Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors">Dashboard</Link></li>
+                <li><Link href="/messages" className="text-gray-400 hover:text-white transition-colors">Messages</Link></li>
+              </ul>
+            </div>
+
+            {/* Company + Contact */}
+            <div>
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Company</h3>
+              <ul className="space-y-2.5 text-sm mb-6">
+                <li><Link href="/terms" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
+              </ul>
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Contact Us</h3>
+              <ul className="space-y-2.5 text-sm">
+                <li>
+                  <a href="mailto:furrlet.in@gmail.com" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <span className="text-xs">✉</span> furrlet.in@gmail.com
+                  </a>
+                </li>
+                <li>
+                  <a href="tel:+917208784418" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <span className="text-xs">📞</span> +91 72087 84418
+                  </a>
+                </li>
+                <li>
+                  <a href="https://instagram.com/furrlet.in" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <span className="text-xs">📸</span> @furrlet.in
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
 
-          {/* Contact us */}
-          <div className="border-t border-gray-100 pt-6">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-4">Contact Us</p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
-              <a href="tel:+917208784418" className="flex items-center gap-2 text-gray-500 hover:text-amber-600 transition-colors text-sm font-medium group">
-                <div className="w-8 h-8 bg-amber-50 group-hover:bg-amber-100 rounded-xl flex items-center justify-center transition-colors">
-                  📞
-                </div>
-                +91 72087 84418
-              </a>
-              <a href="https://instagram.com/furrlet.in" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-500 hover:text-pink-500 transition-colors text-sm font-medium group">
-                <div className="w-8 h-8 bg-pink-50 group-hover:bg-pink-100 rounded-xl flex items-center justify-center transition-colors">
-                  📸
-                </div>
-                @furrlet.in
-              </a>
-              <a href="mailto:furrlet.in@gmail.com" className="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors text-sm font-medium group">
-                <div className="w-8 h-8 bg-blue-50 group-hover:bg-blue-100 rounded-xl flex items-center justify-center transition-colors">
-                  ✉️
-                </div>
-                furrlet.in@gmail.com
-              </a>
+          {/* Bottom bar */}
+          <div className="border-t border-gray-800 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+            <p>© 2026 Furrlet. All rights reserved.</p>
+            <div className="flex gap-5">
+              <Link href="/terms" className="hover:text-gray-300 transition-colors">Terms &amp; Conditions</Link>
+              <Link href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy</Link>
             </div>
           </div>
         </div>
