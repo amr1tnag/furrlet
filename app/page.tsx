@@ -167,16 +167,43 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-gray-100 bg-white py-10 px-4">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🐾</span>
-            <span className="font-black text-gray-900 text-lg">Furrlet</span>
-            <span className="text-gray-300 text-sm ml-2">© 2026</span>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-8">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🐾</span>
+              <span className="font-black text-gray-900 text-lg">Furrlet</span>
+              <span className="text-gray-300 text-sm ml-2">© 2026</span>
+            </div>
+            <p className="text-gray-400 text-sm">Made with ❤️ for dog lovers</p>
+            <div className="flex gap-5 text-sm">
+              <Link href="/auth/signin" className="text-gray-400 hover:text-gray-800 transition font-medium">Sign in</Link>
+              <Link href="/auth/signup" className="text-amber-500 hover:text-amber-700 transition font-semibold">Get started →</Link>
+            </div>
           </div>
-          <p className="text-gray-400 text-sm">Made with ❤️ for dog lovers</p>
-          <div className="flex gap-5 text-sm">
-            <Link href="/auth/signin" className="text-gray-400 hover:text-gray-800 transition font-medium">Sign in</Link>
-            <Link href="/auth/signup" className="text-amber-500 hover:text-amber-700 transition font-semibold">Get started →</Link>
+
+          {/* Contact us */}
+          <div className="border-t border-gray-100 pt-6">
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-4">Contact Us</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+              <a href="tel:+917208784418" className="flex items-center gap-2 text-gray-500 hover:text-amber-600 transition-colors text-sm font-medium group">
+                <div className="w-8 h-8 bg-amber-50 group-hover:bg-amber-100 rounded-xl flex items-center justify-center transition-colors">
+                  📞
+                </div>
+                +91 72087 84418
+              </a>
+              <a href="https://instagram.com/furrlet.in" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-500 hover:text-pink-500 transition-colors text-sm font-medium group">
+                <div className="w-8 h-8 bg-pink-50 group-hover:bg-pink-100 rounded-xl flex items-center justify-center transition-colors">
+                  📸
+                </div>
+                @furrlet.in
+              </a>
+              <a href="mailto:furrlet.in@gmail.com" className="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors text-sm font-medium group">
+                <div className="w-8 h-8 bg-blue-50 group-hover:bg-blue-100 rounded-xl flex items-center justify-center transition-colors">
+                  ✉️
+                </div>
+                furrlet.in@gmail.com
+              </a>
+            </div>
           </div>
         </div>
       </footer>
