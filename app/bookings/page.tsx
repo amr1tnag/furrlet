@@ -8,6 +8,7 @@ const statusConfig: Record<string, { label: string; classes: string; icon: strin
   DECLINED:  { label: 'Declined',  classes: 'bg-red-50 text-red-600 border border-red-100',          icon: '❌' },
   COMPLETED: { label: 'Completed', classes: 'bg-blue-50 text-blue-700 border border-blue-100',       icon: '🏁' },
   CANCELLED: { label: 'Cancelled', classes: 'bg-gray-100 text-gray-500 border border-gray-200',      icon: '🚫' },
+  REFUNDED:  { label: 'Refunded',  classes: 'bg-green-50 text-green-600 border border-green-100',     icon: '↩️' },
 }
 
 function StarPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
@@ -132,9 +133,14 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
               </div>
             </div>
           </div>
-          <span className={`text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 ${st.classes}`}>
-            <span>{st.icon}</span>{st.label}
-          </span>
+          <div className="flex flex-col items-end gap-1">
+            <span className={`text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 ${st.classes}`}>
+              <span>{st.icon}</span>{st.label}
+            </span>
+            {b.status === 'CANCELLED' && b.paymentStatus === 'REFUNDED' && (
+              <span className="text-xs font-semibold text-green-600 flex items-center gap-1">↩ Refunded</span>
+            )}
+          </div>
         </div>
 
         {/* Details */}

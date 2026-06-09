@@ -91,3 +91,32 @@ export async function sendBookingStatusEmail({ ownerEmail, ownerName, walkerName
     `,
   })
 }
+
+export async function sendRefundEmail({ ownerEmail, ownerName, dogName, date, amount }: {
+  ownerEmail: string
+  ownerName: string
+  dogName: string
+  date: string
+  amount: number
+}) {
+  await resend.emails.send({
+    from: FROM,
+    to: ownerEmail,
+    subject: `Refund processed — ₹${amount.toFixed(0)} for ${dogName}'s walk`,
+    html: `
+      <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fffbeb;border-radius:16px;">
+        <div style="font-size:32px;margin-bottom:16px;">💰</div>
+        <h2 style="font-size:22px;font-weight:800;color:#111827;margin:0 0 8px;">Refund Processed</h2>
+        <p style="color:#6b7280;font-size:15px;margin:0 0 24px;">Your booking has been cancelled and a refund has been initiated.</p>
+        <div style="background:white;border-radius:12px;padding:20px;border:1px solid #f3f4f6;margin-bottom:24px;">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Dog</span><span style="font-weight:600;font-size:14px;color:#111827;">${dogName}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Date</span><span style="font-weight:600;font-size:14px;color:#111827;">${date}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:#6b7280;font-size:14px;">Refund Amount</span><span style="font-weight:800;font-size:16px;color:#16a34a;">₹${amount.toFixed(0)}</span></div>
+        </div>
+        <p style="color:#6b7280;font-size:13px;margin:0 0 24px;">Refunds typically appear in your account within 5–7 business days depending on your bank.</p>
+        <a href="https://furrlet.in/walkers" style="display:block;text-align:center;background:#f59e0b;color:white;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;text-decoration:none;">Find Another Walker →</a>
+        <p style="color:#9ca3af;font-size:12px;margin-top:24px;text-align:center;">Furrlet · Making every tail wag</p>
+      </div>
+    `,
+  })
+}
