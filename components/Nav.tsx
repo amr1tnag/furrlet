@@ -35,6 +35,7 @@ export function Nav() {
                   </>
                 )}
                 <Link href="/bookings" className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition font-medium">Bookings</Link>
+                <Link href="/messages" className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition font-medium">Messages</Link>
                 <Link href="/dashboard" className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition font-medium">Dashboard</Link>
                 <div className="ml-2 flex items-center gap-2 pl-2 border-l border-gray-100">
                   <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-700 font-semibold text-sm">
@@ -73,6 +74,7 @@ export function Nav() {
                 {role === 'WALKER' && <Link href="/dogs" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg" onClick={() => setMenuOpen(false)}>Browse Dogs</Link>}
                 {role === 'WALKER' && <Link href="/profile/walker" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg" onClick={() => setMenuOpen(false)}>My Profile</Link>}
                 <Link href="/bookings" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg" onClick={() => setMenuOpen(false)}>Bookings</Link>
+                <Link href="/messages" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg" onClick={() => setMenuOpen(false)}>Messages</Link>
                 <Link href="/dashboard" className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg" onClick={() => setMenuOpen(false)}>Dashboard</Link>
                 <button onClick={() => signOut({ callbackUrl: '/' })} className="block w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-red-50 rounded-lg">Sign out</button>
               </>

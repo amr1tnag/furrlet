@@ -5,6 +5,27 @@ import { prisma } from '@/lib/prisma'
 import { sendBookingStatusEmail, sendRefundEmail } from '@/lib/email'
 import Razorpay from 'razorpay'
 
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  const session = await getServerSession()
+  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: params.id },
+    include: {
+      dog: true,
+      owner: { select: { id: true, name: true } },
+      walker: { select: { id: true, name: true } },
+    },
+  })
+  if (!booking) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  if (booking.ownerId !== user.id && booking.walkerId !== user.id)
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  return NextResponse.json(booking)
+}
+
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID!,
   key_secret: process.env.RAZORPAY_KEY_SECRET!,

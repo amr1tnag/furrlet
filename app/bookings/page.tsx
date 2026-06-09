@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 
 const statusConfig: Record<string, { label: string; classes: string; icon: string }> = {
   PENDING:   { label: 'Pending',   classes: 'bg-yellow-50 text-yellow-700 border border-yellow-100', icon: '🕐' },
@@ -157,19 +158,26 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
           ))}
         </div>
 
-        {/* Owner cancel */}
-        {role === 'OWNER' && (b.status === 'PENDING' || b.status === 'ACCEPTED') && (
-          <div className="pt-2 border-t border-gray-50 flex justify-end">
-            <button
-              onClick={() => {
-                if (confirm('Cancel this booking?')) updateStatus(b.id, 'CANCELLED')
-              }}
-              disabled={!!acting}
-              className="text-xs text-gray-400 hover:text-red-500 font-semibold transition-colors flex items-center gap-1 disabled:opacity-50">
-              🚫 Cancel booking
-            </button>
+        {/* Message button — always visible for active bookings */}
+        {(b.status === 'PENDING' || b.status === 'ACCEPTED' || b.status === 'COMPLETED') && (
+          <div className={`pt-2 border-t border-gray-50 flex ${role === 'OWNER' && (b.status === 'PENDING' || b.status === 'ACCEPTED') ? 'justify-between' : 'justify-end'} items-center`}>
+            <Link href={`/messages/${b.id}`}
+              className="text-xs text-amber-500 hover:text-amber-700 font-semibold transition-colors flex items-center gap-1">
+              💬 Message {role === 'OWNER' ? 'walker' : 'owner'}
+            </Link>
+            {role === 'OWNER' && (b.status === 'PENDING' || b.status === 'ACCEPTED') && (
+              <button
+                onClick={() => {
+                  if (confirm('Cancel this booking?')) updateStatus(b.id, 'CANCELLED')
+                }}
+                disabled={!!acting}
+                className="text-xs text-gray-400 hover:text-red-500 font-semibold transition-colors flex items-center gap-1 disabled:opacity-50">
+                🚫 Cancel booking
+              </button>
+            )}
           </div>
         )}
+
 
         {/* Walker actions */}
         {role === 'WALKER' && isPending && (
