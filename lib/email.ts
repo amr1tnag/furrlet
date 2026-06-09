@@ -1,11 +1,11 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = 'Furrlet <notifications@furrlet.in>'
+function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
 export async function sendWelcomeEmail({ name, email, role }: { name: string; email: string; role: string }) {
   const isWalker = role === 'WALKER'
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: `Welcome to Furrlet, ${name}! 🐾`,
@@ -37,7 +37,7 @@ export async function sendBookingRequestEmail({ walkerEmail, walkerName, ownerNa
   duration: number
   totalPrice: number
 }) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: walkerEmail,
     subject: `New booking request from ${ownerName}`,
@@ -69,7 +69,7 @@ export async function sendBookingStatusEmail({ ownerEmail, ownerName, walkerName
   status: string
 }) {
   const accepted = status === 'ACCEPTED'
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: ownerEmail,
     subject: `Your booking was ${accepted ? 'accepted' : 'declined'} by ${walkerName}`,
@@ -97,7 +97,7 @@ export async function sendVerificationRequestEmail({ walkerName, walkerEmail, aa
   walkerEmail: string
   aadhaarNumber: string
 }) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: 'amritnag2005@gmail.com',
     subject: `Verification request from ${walkerName}`,
@@ -123,7 +123,7 @@ export async function sendRefundEmail({ ownerEmail, ownerName, dogName, date, am
   date: string
   amount: number
 }) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: ownerEmail,
     subject: `Refund processed — ₹${amount.toFixed(0)} for ${dogName}'s walk`,

@@ -4,10 +4,9 @@ import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 import Razorpay from 'razorpay'
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-})
+function getRazorpay() {
+  return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID!, key_secret: process.env.RAZORPAY_KEY_SECRET! })
+}
 
 export async function POST(req: Request) {
   const session = await getServerSession()
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
   const totalPrice = parseInt(duration) === 30 ? 99 : 199
   const amountPaise = Math.round(totalPrice * 100) // Razorpay uses paise
 
-  const order = await razorpay.orders.create({
+  const order = await getRazorpay().orders.create({
     amount: amountPaise,
     currency: 'INR',
     receipt: `booking_${Date.now()}`,

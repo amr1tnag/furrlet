@@ -1,13 +1,15 @@
 import webpush from 'web-push'
 import { prisma } from './prisma'
 
-webpush.setVapidDetails(
-  'mailto:furrlet.in@gmail.com',
-  process.env.VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-)
-
 export async function sendPushToUser(userId: string, payload: { title: string; body: string; url?: string }) {
+  if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) return
+
+  webpush.setVapidDetails(
+    'mailto:furrlet.in@gmail.com',
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  )
+
   const subs = await prisma.pushSubscription.findMany({ where: { userId } })
   const dead: string[] = []
 

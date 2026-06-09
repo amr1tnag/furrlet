@@ -27,10 +27,9 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   return NextResponse.json(booking)
 }
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-})
+function getRazorpay() {
+  return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID!, key_secret: process.env.RAZORPAY_KEY_SECRET! })
+}
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const session = await getServerSession()
@@ -53,7 +52,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   let paymentStatus = existing.paymentStatus
   if (status === 'CANCELLED' && existing.paymentStatus === 'PAID' && existing.paymentId) {
     try {
-      await razorpay.payments.refund(existing.paymentId, {
+      await getRazorpay().payments.refund(existing.paymentId, {
         amount: Math.round(existing.totalPrice * 100),
       })
       paymentStatus = 'REFUNDED'
