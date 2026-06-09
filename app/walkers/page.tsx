@@ -2,6 +2,8 @@
 import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
 function SkeletonCard() {
   return (
@@ -34,10 +36,12 @@ const gradients = [
 
 type SortOption = 'rating' | 'price-asc' | 'price-desc'
 
-export default function Walkers() {
+function WalkersInner() {
+  const searchParams = useSearchParams()
+  const cityParam = searchParams.get('city') || ''
   const [walkers, setWalkers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(cityParam)
   const [maxPrice, setMaxPrice] = useState(100)
   const [sort, setSort] = useState<SortOption>('rating')
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -89,7 +93,9 @@ export default function Walkers() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-black text-gray-900 tracking-tight">Find a Walker</h1>
-        <p className="text-gray-500 text-sm mt-1">Browse verified dog walkers in your area</p>
+        <p className="text-gray-500 text-sm mt-1">
+          {cityParam ? <>Showing walkers in <span className="text-amber-600 font-semibold">{cityParam}</span></> : 'Browse verified dog walkers in your area'}
+        </p>
       </div>
 
       {/* Search + Filter bar */}
@@ -269,5 +275,13 @@ export default function Walkers() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function Walkers() {
+  return (
+    <Suspense>
+      <WalkersInner />
+    </Suspense>
   )
 }

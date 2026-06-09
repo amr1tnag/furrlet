@@ -72,10 +72,24 @@ export default function Bookings() {
       </div>
 
       {bookings.length === 0 ? (
-        <div className="card p-16 text-center">
-          <div className="text-5xl mb-4">📅</div>
-          <p className="text-gray-600 font-semibold">No bookings yet</p>
-          <p className="text-gray-400 text-sm mt-1">{role === 'WALKER' ? 'Booking requests will appear here' : 'Book a walker to get started'}</p>
+        <div className="card p-12 text-center border-2 border-dashed border-gray-200">
+          <div className="text-6xl mb-4" style={{ filter: 'grayscale(0)' }}>
+            {role === 'WALKER' ? '🏃' : '📅'}
+          </div>
+          <p className="text-gray-800 font-bold text-lg mb-1">
+            {role === 'WALKER' ? 'No bookings yet' : 'No walks booked yet'}
+          </p>
+          <p className="text-gray-400 text-sm mb-6 max-w-xs mx-auto">
+            {role === 'WALKER'
+              ? 'Booking requests from owners will show up here. Make sure your profile is complete!'
+              : 'Your upcoming and past walks will appear here. Book your first walk in seconds!'}
+          </p>
+          {role === 'OWNER' && (
+            <Link href="/walkers" className="btn-primary inline-block">Find a Walker</Link>
+          )}
+          {role === 'WALKER' && (
+            <Link href="/profile/walker" className="btn-primary inline-block">Complete My Profile</Link>
+          )}
         </div>
       ) : (
         <div className="space-y-8">

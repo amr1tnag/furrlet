@@ -17,9 +17,9 @@ model User {
 
   walkerProfile     WalkerProfile?
   dogs              Dog[]
-  bookingsAsOwner   Booking[]       @relation("OwnerBookings")
-  bookingsAsWalker  Booking[]       @relation("WalkerBookings")
-  sentMessages      Message[]       @relation("SentMessages")
+  bookingsAsOwner   Booking[]          @relation("OwnerBookings")
+  bookingsAsWalker  Booking[]          @relation("WalkerBookings")
+  sentMessages      Message[]          @relation("SentMessages")
   pushSubscriptions PushSubscription[]
 }
 
@@ -91,11 +91,11 @@ model Message {
 }
 
 model PushSubscription {
-  id       String @id @default(cuid())
-  userId   String
-  user     User   @relation(fields: [userId], references: [id])
-  endpoint String @unique
-  p256dh   String
-  auth     String
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
   createdAt DateTime @default(now())
 }
