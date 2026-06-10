@@ -95,7 +95,7 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
     </div>
   )
 
-  const priceINR = form.duration === '30' ? 99 : 199
+  const priceINR = form.duration === '30' ? 99 : form.duration === '45' ? 149 : 199
   const mapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY
   const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${mapsKey}&q=${encodeURIComponent(walker.city)}&zoom=13`
 
@@ -223,8 +223,8 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
             </div>
             <div>
               <label className="label">Duration</label>
-              <div className="grid grid-cols-2 gap-3">
-                {[['30', '30 min', '₹99'], ['60', '1 hr', '₹199']].map(([v, l, price]) => (
+              <div className="grid grid-cols-3 gap-3">
+                {[['30', '30 min', '₹99'], ['45', '45 min', '₹149'], ['60', '1 hr', '₹199']].map(([v, l, price]) => (
                   <button key={v} type="button" onClick={() => setForm(f => ({ ...f, duration: v }))}
                     className={`py-3 rounded-xl border-2 text-sm font-semibold transition-all flex flex-col items-center gap-0.5 ${
                       form.duration === v ? 'border-amber-400 bg-amber-50 text-amber-700' : 'border-gray-200 text-gray-500 hover:border-gray-300'
