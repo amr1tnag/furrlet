@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getSessionEmail } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { sendPushToUser } from '@/lib/push'
 
@@ -10,14 +10,10 @@ async function getAuthorizedBooking(bookingId: string, userId: string) {
   return booking
 }
 
-async function getSessionUser() {
-  const session = await getServerSession()
-  if (!session?.user?.email) return null
-  return prisma.user.findUnique({ where: { email: session.user.email } })
-}
-
-export async function GET(_req: NextRequest, { params }: { params: { bookingId: string } }) {
-  const user = await getSessionUser()
+export async function GET(req: NextRequest, { params }: { params: { bookingId: string } }) {
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const userId = user.id
@@ -34,7 +30,9 @@ export async function GET(_req: NextRequest, { params }: { params: { bookingId: 
 }
 
 export async function POST(req: NextRequest, { params }: { params: { bookingId: string } }) {
-  const user = await getSessionUser()
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const userId = user.id

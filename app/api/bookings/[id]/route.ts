@@ -1,15 +1,15 @@
 export const dynamic = 'force-dynamic'
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { NextRequest, NextResponse } from 'next/server'
+import { getSessionEmail } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { sendBookingStatusEmail, sendRefundEmail } from '@/lib/email'
 import { sendPushToUser } from '@/lib/push'
 import Razorpay from 'razorpay'
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
-  const session = await getServerSession()
-  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const booking = await prisma.booking.findUnique({
@@ -24,7 +24,6 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   if (booking.ownerId !== user.id && booking.walkerId !== user.id)
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  // Only expose each OTP to the party that needs to see it
   return NextResponse.json({
     ...booking,
     startOtp: booking.ownerId === user.id ? booking.startOtp : undefined,
@@ -36,13 +35,12 @@ function getRazorpay() {
   return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID!, key_secret: process.env.RAZORPAY_KEY_SECRET! })
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  const session = await getServerSession()
-  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { status } = await req.json()
 
-  // Fetch booking before update to check payment status
   const existing = await prisma.booking.findUnique({
     where: { id: params.id },
     include: {
@@ -53,7 +51,6 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   })
   if (!existing) return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
 
-  // Trigger refund if cancelling a paid booking
   let paymentStatus = existing.paymentStatus
   if (status === 'CANCELLED' && existing.paymentStatus === 'PAID' && existing.paymentId) {
     try {
@@ -73,7 +70,6 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     data: {
       status,
       paymentStatus,
-      // Generate start OTP when walker accepts
       ...(status === 'ACCEPTED' ? { startOtp: otp4() } : {}),
     },
     include: {
@@ -83,7 +79,6 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     },
   })
 
-  // Send status emails + push notifications
   if (status === 'ACCEPTED' || status === 'DECLINED') {
     try {
       await sendBookingStatusEmail({
@@ -106,7 +101,6 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     } catch (_) {}
   }
 
-  // Push to walker on new booking (PENDING handled in POST /api/bookings)
   if (status === 'COMPLETED') {
     try {
       await sendPushToUser(existing.ownerId, {
@@ -117,7 +111,6 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     } catch (_) {}
   }
 
-  // Send refund confirmation email
   if (status === 'CANCELLED' && paymentStatus === 'REFUNDED') {
     try {
       await sendRefundEmail({

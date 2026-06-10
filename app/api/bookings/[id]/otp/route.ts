@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getSessionEmail } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-
-async function getUser() {
-  const session = await getServerSession()
-  if (!session?.user?.email) return null
-  return prisma.user.findUnique({ where: { email: session.user.email } })
-}
 
 const otp4 = () => String(Math.floor(1000 + Math.random() * 9000))
 
@@ -15,7 +9,9 @@ const otp4 = () => String(Math.floor(1000 + Math.random() * 9000))
 // type=end         → walker requests end OTP (generated + returned)
 // type=end  + otp  → owner verifies end OTP to complete walk
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const user = await getUser()
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const booking = await prisma.booking.findUnique({ where: { id: params.id } })
@@ -25,7 +21,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   const { type, otp } = await req.json()
 
-  // ── Walker submits start OTP ─────────────────────────────────────────────
   if (type === 'start' && otp) {
     if (booking.walkerId !== user.id) return NextResponse.json({ error: 'Only the walker can verify the start OTP' }, { status: 403 })
     if (booking.startOtp !== otp) return NextResponse.json({ success: false, error: 'Incorrect OTP' })
@@ -36,7 +31,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ success: true })
   }
 
-  // ── Walker generates end OTP ─────────────────────────────────────────────
   if (type === 'end' && !otp) {
     if (booking.walkerId !== user.id) return NextResponse.json({ error: 'Only the walker can generate the end OTP' }, { status: 403 })
     const endOtp = otp4()
@@ -44,7 +38,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ success: true, endOtp })
   }
 
-  // ── Owner verifies end OTP to complete walk ───────────────────────────────
   if (type === 'end' && otp) {
     if (booking.ownerId !== user.id) return NextResponse.json({ error: 'Only the owner can verify the end OTP' }, { status: 403 })
     if (booking.endOtp !== otp) return NextResponse.json({ success: false, error: 'Incorrect OTP' })

@@ -1,13 +1,13 @@
 export const dynamic = 'force-dynamic'
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { NextRequest, NextResponse } from 'next/server'
+import { getSessionEmail } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export async function POST(req: Request) {
-  const session = await getServerSession()
-  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function POST(req: NextRequest) {
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { endpoint, keys } = await req.json()
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   return NextResponse.json({ ok: true })
 }
 
-export async function DELETE(req: Request) {
+export async function DELETE(req: NextRequest) {
   const { endpoint } = await req.json()
   if (endpoint) await prisma.pushSubscription.deleteMany({ where: { endpoint } })
   return NextResponse.json({ ok: true })

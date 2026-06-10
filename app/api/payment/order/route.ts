@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { NextRequest, NextResponse } from 'next/server'
+import { getSessionEmail } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import Razorpay from 'razorpay'
 
@@ -8,10 +8,10 @@ function getRazorpay() {
   return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID!, key_secret: process.env.RAZORPAY_KEY_SECRET! })
 }
 
-export async function POST(req: Request) {
-  const session = await getServerSession()
-  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+export async function POST(req: NextRequest) {
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user || user.role !== 'OWNER') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { walkerId, dogId, date, duration, address } = await req.json()

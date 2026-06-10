@@ -1,15 +1,15 @@
 export const dynamic = 'force-dynamic'
-import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { NextRequest, NextResponse } from 'next/server'
+import { getSessionEmail } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { sendVerificationRequestEmail } from '@/lib/email'
 
 // Walker submits verification request
-export async function POST(req: Request) {
-  const session = await getServerSession()
-  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+export async function POST(req: NextRequest) {
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const user = await prisma.user.findUnique({ where: { email: session.user.email } })
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user || user.role !== 'WALKER') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { aadhaarNumber } = await req.json()

@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getSessionEmail } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-async function getUser() {
-  const session = await getServerSession()
-  if (!session?.user?.email) return null
-  return prisma.user.findUnique({ where: { email: session.user.email } })
-}
-
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
-  const user = await getUser()
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const booking = await prisma.booking.findUnique({ where: { id: params.id } })
@@ -26,7 +22,9 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 }
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const user = await getUser()
+  const email = await getSessionEmail(req)
+  if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const user = await prisma.user.findUnique({ where: { email } })
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const booking = await prisma.booking.findUnique({ where: { id: params.id } })
@@ -41,7 +39,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       lat: active ? lat : null,
       lng: active ? lng : null,
       trackingActive: active ?? true,
-      // Only set walkStartedAt the first time walk starts
       ...(active && !booking.walkStartedAt ? { walkStartedAt: new Date() } : {}),
     },
   })
