@@ -214,7 +214,7 @@ export default function Home() {
       </section>
 
       {/* Pricing section */}
-      <section className="py-20 px-4 bg-white">
+      <section className="py-20 px-4 bg-gray-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">Simple, transparent pricing</h2>
