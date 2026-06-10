@@ -147,24 +147,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA section */}
-      <section className="py-24 px-4 mesh-bg relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
-        <div className="relative max-w-2xl mx-auto text-center">
-          <div className="text-6xl mb-6 animate-bounce-soft inline-block">🐾</div>
-          <h2 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight mb-4">
-            Ready to get started?
-          </h2>
-          <p className="text-gray-500 text-lg mb-10 leading-relaxed">
-            Join hundreds of happy dog owners and walkers.<br />Free forever, no credit card required.
-          </p>
-          <Link href="/auth/signup"
-            className="inline-flex items-center justify-center gap-2 bg-amber-500 text-white px-10 py-4 rounded-2xl text-base font-bold hover:bg-amber-600 active:scale-95 transition-all duration-200 shadow-xl shadow-amber-200 hover:shadow-2xl hover:shadow-amber-300 hover:-translate-y-0.5">
-            Create your free account →
-          </Link>
-        </div>
-      </section>
-
       {/* Pricing section */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-5xl mx-auto">
@@ -235,6 +217,24 @@ export default function Home() {
           </div>
 
           <p className="text-center text-gray-400 text-sm mt-8">Payments secured by Razorpay · UPI, cards &amp; netbanking accepted</p>
+        </div>
+      </section>
+
+      {/* CTA section */}
+      <section className="py-24 px-4 mesh-bg relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
+        <div className="relative max-w-2xl mx-auto text-center">
+          <div className="text-6xl mb-6 animate-bounce-soft inline-block">🐾</div>
+          <h2 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight mb-4">
+            Ready to get started?
+          </h2>
+          <p className="text-gray-500 text-lg mb-10 leading-relaxed">
+            Join hundreds of happy dog owners and walkers.<br />Free forever, no credit card required.
+          </p>
+          <Link href="/auth/signup"
+            className="inline-flex items-center justify-center gap-2 bg-amber-500 text-white px-10 py-4 rounded-2xl text-base font-bold hover:bg-amber-600 active:scale-95 transition-all duration-200 shadow-xl shadow-amber-200 hover:shadow-2xl hover:shadow-amber-300 hover:-translate-y-0.5">
+            Create your free account →
+          </Link>
         </div>
       </section>
 
