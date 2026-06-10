@@ -2,7 +2,6 @@
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { signIn } from 'next-auth/react'
 
 function SignUpForm() {
   const router = useRouter()
@@ -17,8 +16,8 @@ function SignUpForm() {
     setError('')
     const res = await fetch('/api/auth/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
     if (!res.ok) { setError((await res.json()).error); setLoading(false); return }
-    await signIn('credentials', { email: form.email, password: form.password, redirect: false })
-    router.push('/onboarding')
+    const params = new URLSearchParams({ email: form.email, password: form.password })
+    router.push(`/auth/verify?${params.toString()}`)
   }
 
   return (

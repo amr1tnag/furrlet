@@ -15,6 +15,12 @@ export default function SignIn() {
     setLoading(true)
     const res = await signIn('credentials', { ...form, redirect: false })
     if (res?.error) { setError('Invalid email or password'); setLoading(false); return }
+    const me = await fetch('/api/auth/me').then(r => r.json()).catch(() => null)
+    if (me && !me.isVerified) {
+      const qs = new URLSearchParams({ email: form.email, password: form.password })
+      router.push(`/auth/verify?${qs.toString()}`)
+      return
+    }
     router.push('/dashboard')
   }
 

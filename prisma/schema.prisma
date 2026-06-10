@@ -8,12 +8,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      String   // "WALKER" or "OWNER"
-  createdAt DateTime @default(now())
+  id         String    @id @default(cuid())
+  email      String    @unique
+  password   String
+  name       String
+  role       String
+  phone      String?
+  isVerified Boolean   @default(false)
+  otpHash    String?
+  otpExpiry  DateTime?
+  createdAt  DateTime  @default(now())
 
   walkerProfile     WalkerProfile?
   dogs              Dog[]

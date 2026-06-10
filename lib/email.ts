@@ -3,6 +3,25 @@ import { Resend } from 'resend'
 const FROM = 'Furrlet <notifications@furrlet.in>'
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
+export async function sendOtpEmail({ name, email, otp }: { name: string; email: string; otp: string }) {
+  await getResend().emails.send({
+    from: FROM,
+    to: email,
+    subject: `${otp} is your Furrlet verification code`,
+    html: `
+      <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fffbeb;border-radius:16px;">
+        <div style="font-size:40px;margin-bottom:16px;">🐾</div>
+        <h2 style="font-size:22px;font-weight:800;color:#111827;margin:0 0 8px;">Verify your account, ${name}</h2>
+        <p style="color:#6b7280;font-size:15px;margin:0 0 24px;">Enter this code on the verification page. It expires in 10 minutes.</p>
+        <div style="background:white;border-radius:16px;padding:24px;text-align:center;border:2px solid #fde68a;margin-bottom:24px;">
+          <div style="font-size:40px;font-weight:900;letter-spacing:12px;color:#111827;">${otp}</div>
+        </div>
+        <p style="color:#9ca3af;font-size:12px;text-align:center;">If you didn't create a Furrlet account, ignore this email.</p>
+      </div>
+    `,
+  })
+}
+
 export async function sendWelcomeEmail({ name, email, role }: { name: string; email: string; role: string }) {
   const isWalker = role === 'WALKER'
   await getResend().emails.send({
