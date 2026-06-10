@@ -17,6 +17,9 @@ export default function WalkerProfilePage() {
   const [aadhaar, setAadhaar] = useState('')
   const [verifying, setVerifying] = useState(false)
   const [verifyDone, setVerifyDone] = useState(false)
+  const [isActive, setIsActive] = useState(true)
+  const [togglingActive, setTogglingActive] = useState(false)
+  const [reviews, setReviews] = useState<any[]>([])
 
   useEffect(() => {
     if (status === 'unauthenticated') { router.push('/auth/signin'); return }
@@ -29,8 +32,10 @@ export default function WalkerProfilePage() {
         setForm({ bio: p.bio, city: p.city, availability: p.availability, photoUrl: p.photoUrl || '', upiId: p.upiId || '' })
         setVerificationStatus(p.verificationStatus ?? 'NONE')
         setVerified(p.verified ?? false)
+        setIsActive(p.isActive ?? true)
       }
     })
+    fetch(`/api/reviews/${id}`).then(r => r.ok ? r.json() : []).then(d => setReviews(Array.isArray(d) ? d : []))
   }, [session, status, router])
 
   async function uploadPhoto(file: File) {
@@ -58,6 +63,18 @@ export default function WalkerProfilePage() {
     setVerificationStatus('PENDING')
     setVerifyDone(true)
     setVerifying(false)
+  }
+
+  async function toggleActive() {
+    setTogglingActive(true)
+    const next = !isActive
+    await fetch('/api/walkers', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isActive: next }),
+    })
+    setIsActive(next)
+    setTogglingActive(false)
   }
 
   async function submit(e: React.FormEvent) {
@@ -188,6 +205,33 @@ export default function WalkerProfilePage() {
         </form>
       </div>
 
+      {/* Pause / resume profile */}
+      <div className="card p-5 sm:p-6 mt-6">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-xl ${isActive ? 'bg-green-50' : 'bg-gray-100'}`}>
+              {isActive ? '✅' : '⏸️'}
+            </div>
+            <div>
+              <div className="font-bold text-gray-900 text-sm">{isActive ? 'Profile is live' : 'Profile is paused'}</div>
+              <div className="text-gray-400 text-xs mt-0.5">
+                {isActive ? 'Dog owners can find and book you.' : 'You are hidden from search. No new bookings.'}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={toggleActive}
+            disabled={togglingActive}
+            className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 ${
+              isActive
+                ? 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                : 'bg-green-500 hover:bg-green-600 text-white'
+            }`}>
+            {togglingActive ? '...' : isActive ? '⏸ Pause' : '▶ Go Live'}
+          </button>
+        </div>
+      </div>
+
       {/* Verification card — only shown if not yet verified/pending */}
       {verificationStatus === 'NONE' && (
         <div className="card p-5 sm:p-8 mt-6">
@@ -226,6 +270,47 @@ export default function WalkerProfilePage() {
           )}
         </div>
       )}
+      {/* My reviews */}
+      <div className="card p-5 sm:p-6 mt-6">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="font-black text-gray-900">My Reviews</h2>
+            <p className="text-gray-400 text-xs mt-0.5">{reviews.length} review{reviews.length !== 1 ? 's' : ''}</p>
+          </div>
+          {reviews.length > 0 && (
+            <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-xl px-3 py-1.5">
+              <span className="text-yellow-400 text-sm">★</span>
+              <span className="font-black text-gray-900 text-sm">
+                {(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)}
+              </span>
+              <span className="text-gray-400 text-xs">avg</span>
+            </div>
+          )}
+        </div>
+
+        {reviews.length === 0 ? (
+          <div className="text-center py-8">
+            <div className="text-4xl mb-3">⭐</div>
+            <p className="text-gray-500 font-semibold text-sm">No reviews yet</p>
+            <p className="text-gray-400 text-xs mt-1">Reviews from dog owners will appear here after completed walks.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {reviews.map((r: any) => (
+              <div key={r.id} className="border-b border-gray-50 pb-4 last:border-0 last:pb-0">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-semibold text-gray-800 text-sm">{r.booking?.owner?.name ?? 'Dog Owner'}</span>
+                  <span className="text-yellow-400 text-sm">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                </div>
+                <p className="text-xs text-gray-400 mb-1.5">
+                  Walked {r.booking?.dog?.name ?? 'a dog'} · {new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </p>
+                {r.comment && <p className="text-gray-600 text-sm leading-relaxed">{r.comment}</p>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
