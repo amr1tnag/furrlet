@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
       walker: { select: { id: true, name: true } },
       dog: { select: { name: true } },
     },
-    orderBy: { updatedAt: 'desc' },
+    orderBy: { createdAt: 'desc' },
   })
 
   return NextResponse.json(bookings)
