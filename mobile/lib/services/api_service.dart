@@ -14,7 +14,7 @@ class ApiService {
     final headers = {'Content-Type': 'application/json'};
     if (auth) {
       final token = await _getToken();
-      if (token != null) headers['Cookie'] = 'next-auth.session-token=$token';
+      if (token != null) headers['Authorization'] = 'Bearer $token';
     }
     return headers;
   }
@@ -38,27 +38,17 @@ class ApiService {
     required String email,
     required String password,
   }) async {
-    // Step 1: Get CSRF token
-    final csrfRes = await http.get(Uri.parse('https://furrlet.in/api/auth/csrf'));
-    final csrfData = jsonDecode(csrfRes.body);
-    final csrfToken = csrfData['csrfToken'];
-
-    // Step 2: Sign in with credentials
     final res = await http.post(
-      Uri.parse('https://furrlet.in/api/auth/callback/credentials'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: 'email=${Uri.encodeComponent(email)}&password=${Uri.encodeComponent(password)}&csrfToken=$csrfToken&json=true',
+      Uri.parse('$baseUrl/auth/mobile-signin'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email, 'password': password}),
     );
-
-    // Extract session cookie
-    final cookies = res.headers['set-cookie'] ?? '';
-    final sessionMatch = RegExp(r'next-auth\.session-token=([^;]+)').firstMatch(cookies);
-    if (sessionMatch != null) {
-      await _storage.write(key: 'session_token', value: sessionMatch.group(1));
-    }
-
-    if (res.statusCode == 200 || res.statusCode == 302) {
-      return {'success': true};
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+      if (data['token'] != null) {
+        await _storage.write(key: 'session_token', value: data['token']);
+        return {'success': true, 'user': data['user']};
+      }
     }
     return {'error': 'Invalid credentials'};
   }
