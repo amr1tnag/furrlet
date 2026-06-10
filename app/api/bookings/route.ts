@@ -4,6 +4,11 @@ import { getSessionEmail } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { sendBookingRequestEmail } from '@/lib/email'
 import { sendPushToUser } from '@/lib/push'
+import Razorpay from 'razorpay'
+
+function getRazorpay() {
+  return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID!, key_secret: process.env.RAZORPAY_KEY_SECRET! })
+}
 
 export async function GET(req: NextRequest) {
   const email = await getSessionEmail(req)
@@ -49,5 +54,18 @@ export async function POST(req: NextRequest) {
       url: '/bookings',
     })
   } catch (_) {}
-  return NextResponse.json(booking)
+
+  let razorpayOrderId = ''
+  try {
+    const order = await getRazorpay().orders.create({
+      amount: Math.round(totalPrice * 100),
+      currency: 'INR',
+      receipt: booking.id,
+    })
+    razorpayOrderId = order.id
+  } catch (e) {
+    console.error('Razorpay order creation failed:', e)
+  }
+
+  return NextResponse.json({ ...booking, razorpayOrderId, razorpayKeyId: process.env.RAZORPAY_KEY_ID })
 }

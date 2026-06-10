@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import { sendBookingStatusEmail, sendRefundEmail } from '@/lib/email'
 import { sendPushToUser } from '@/lib/push'
 import Razorpay from 'razorpay'
+import crypto from 'crypto'
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const email = await getSessionEmail(req)
@@ -39,7 +40,24 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const email = await getSessionEmail(req)
   if (!email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { status } = await req.json()
+  const body = await req.json()
+
+  // Payment confirmation flow
+  if (body.paymentId) {
+    const { paymentId, orderId, signature } = body
+    const expectedSig = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+      .update(`${orderId}|${paymentId}`)
+      .digest('hex')
+    if (expectedSig !== signature) return NextResponse.json({ error: 'Invalid payment signature' }, { status: 400 })
+    const booking = await prisma.booking.update({
+      where: { id: params.id },
+      data: { paymentId, paymentStatus: 'PAID' },
+    })
+    return NextResponse.json(booking)
+  }
+
+  const { status } = body
 
   const existing = await prisma.booking.findUnique({
     where: { id: params.id },
