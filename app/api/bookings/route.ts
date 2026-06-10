@@ -21,12 +21,13 @@ export async function POST(req: Request) {
   if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const user = await prisma.user.findUnique({ where: { email: session.user.email } })
   if (!user || user.role !== 'OWNER') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  const { walkerId, dogId, date, duration } = await req.json()
+  const { walkerId, dogId, date, duration, address } = await req.json()
   const walkerProfile = await prisma.walkerProfile.findFirst({ where: { userId: walkerId } })
   if (!walkerProfile) return NextResponse.json({ error: 'Walker not found' }, { status: 404 })
-  const totalPrice = parseInt(duration) === 30 ? 99 : 199
+  const dur = parseInt(duration)
+  const totalPrice = dur === 30 ? 99 : dur === 45 ? 149 : 199
   const booking = await prisma.booking.create({
-    data: { walkerId, dogId, ownerId: user.id, date, duration: parseInt(duration), totalPrice },
+    data: { walkerId, dogId, ownerId: user.id, date, duration: dur, totalPrice, address: address || '' },
     include: { dog: true, walker: { select: { name: true, email: true } } },
   })
   try {
@@ -36,8 +37,9 @@ export async function POST(req: Request) {
       ownerName: user.name,
       dogName: booking.dog.name,
       date,
-      duration: parseInt(duration),
+      duration: dur,
       totalPrice,
+      address: address || '',
     })
   } catch (_) {}
   try {
