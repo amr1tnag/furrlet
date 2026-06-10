@@ -27,7 +27,8 @@ export async function POST(req: Request) {
   // Create booking after verified payment
   const walkerProfile = await prisma.walkerProfile.findFirst({ where: { userId: walkerId } })
   if (!walkerProfile) return NextResponse.json({ error: 'Walker not found' }, { status: 404 })
-  const totalPrice = (walkerProfile.hourlyRate * parseInt(duration)) / 60
+  const dur = parseInt(duration)
+  const totalPrice = dur === 30 ? 99 : dur === 45 ? 149 : 199
 
   const booking = await prisma.booking.create({
     data: {
