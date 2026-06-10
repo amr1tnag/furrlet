@@ -128,7 +128,7 @@ export default function Home() {
               { icon: '⭐', title: 'Real reviews', desc: 'See honest ratings before you book. No fake reviews, ever.' },
               { icon: '📍', title: 'Local first', desc: 'Find experienced walkers right in your neighbourhood.' },
               { icon: '💬', title: 'Easy booking', desc: 'Book a walk in under 2 minutes, any time of day or night.' },
-              { icon: '💰', title: 'Simple pricing', desc: '₹99 for 30 min, ₹199 for 1 hour. No hidden fees, no surprises.' },
+              { icon: '💰', title: 'Simple pricing', desc: '₹99 for 30 min, ₹149 for 45 min, ₹199 for 1 hour. No hidden fees, no surprises.' },
               { icon: '🐶', title: 'Happy dogs', desc: 'Thousands of tail wags and counting. Your pup deserves the best.' },
             ].map((f, i) => (
               <div key={f.title}
@@ -167,13 +167,13 @@ export default function Home() {
 
       {/* Pricing section */}
       <section className="py-20 px-4 bg-white">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">Simple, transparent pricing</h2>
             <p className="text-gray-500 text-lg">No hidden fees. Pay only for the walk.</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-3 gap-6">
             {/* 30 min */}
             <div className="card p-8 flex flex-col items-center text-center hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
               <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mb-5">🐕</div>
@@ -193,16 +193,16 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* 1 hour — highlighted */}
+            {/* 45 min — highlighted */}
             <div className="relative card p-8 flex flex-col items-center text-center border-amber-300 shadow-[0_0_0_2px_rgba(251,191,36,0.3)] hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-orange-400" />
               <div className="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">Popular</div>
-              <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mb-5">🦮</div>
-              <div className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Full Walk</div>
-              <div className="text-5xl font-black text-gray-900 mb-1">₹199</div>
-              <div className="text-gray-400 text-sm mb-6">per 60 minutes</div>
+              <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mb-5">🐾</div>
+              <div className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Standard Walk</div>
+              <div className="text-5xl font-black text-gray-900 mb-1">₹149</div>
+              <div className="text-gray-400 text-sm mb-6">per 45 minutes</div>
               <ul className="space-y-2.5 text-sm text-gray-600 mb-8 w-full text-left">
-                {['60-minute walk', 'GPS-tracked route', 'Post-walk report', 'Verified walker', 'Best value'].map(f => (
+                {['45-minute walk', 'GPS-tracked route', 'Post-walk report', 'Verified walker', 'Best value'].map(f => (
                   <li key={f} className="flex items-center gap-2">
                     <span className="w-5 h-5 bg-green-50 text-green-500 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">✓</span>
                     {f}
@@ -210,6 +210,25 @@ export default function Home() {
                 ))}
               </ul>
               <Link href="/auth/signup" className="w-full text-center py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition-colors shadow-sm">
+                Get started
+              </Link>
+            </div>
+
+            {/* 1 hour */}
+            <div className="card p-8 flex flex-col items-center text-center hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+              <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mb-5">🦮</div>
+              <div className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Full Walk</div>
+              <div className="text-5xl font-black text-gray-900 mb-1">₹199</div>
+              <div className="text-gray-400 text-sm mb-6">per 60 minutes</div>
+              <ul className="space-y-2.5 text-sm text-gray-600 mb-8 w-full text-left">
+                {['60-minute walk', 'GPS-tracked route', 'Post-walk report', 'Verified walker'].map(f => (
+                  <li key={f} className="flex items-center gap-2">
+                    <span className="w-5 h-5 bg-green-50 text-green-500 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">✓</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/auth/signup" className="w-full text-center py-3 rounded-xl border-2 border-amber-400 text-amber-600 font-bold hover:bg-amber-50 transition-colors">
                 Get started
               </Link>
             </div>
