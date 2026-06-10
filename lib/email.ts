@@ -51,7 +51,7 @@ export async function sendBookingRequestEmail({ walkerEmail, walkerName, ownerNa
           <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Dog</span><span style="font-weight:600;font-size:14px;color:#111827;">${dogName}</span></div>
           <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Date</span><span style="font-weight:600;font-size:14px;color:#111827;">${date}</span></div>
           <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9fafb;"><span style="color:#6b7280;font-size:14px;">Duration</span><span style="font-weight:600;font-size:14px;color:#111827;">${duration} min</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:#6b7280;font-size:14px;">Total</span><span style="font-weight:800;font-size:16px;color:#f59e0b;">$${totalPrice.toFixed(2)}</span></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:#6b7280;font-size:14px;">Total</span><span style="font-weight:800;font-size:16px;color:#f59e0b;">₹${totalPrice.toFixed(0)}</span></div>
         </div>
         <a href="https://furrlet.in/bookings" style="display:block;text-align:center;background:#f59e0b;color:white;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;text-decoration:none;">Accept or Decline →</a>
         <p style="color:#9ca3af;font-size:12px;margin-top:24px;text-align:center;">Furrlet · Making every tail wag</p>
