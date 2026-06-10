@@ -1,14 +1,14 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 
 declare global {
   interface Window { Razorpay: any }
 }
 
 export default function WalkerDetail({ params }: { params: { id: string } }) {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const [walker, setWalker] = useState<any>(null)
   const [dogs, setDogs] = useState<any[]>([])
