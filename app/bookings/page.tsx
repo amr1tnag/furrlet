@@ -163,7 +163,7 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
           {[
             { icon: '📅', label: 'Date', value: b.date },
             { icon: '⏱', label: 'Duration', value: `${b.duration} min` },
-            { icon: '💰', label: 'Total', value: `₹${b.totalPrice.toFixed(2)}` },
+            { icon: '💰', label: 'Total', value: `₹${b.totalPrice.toFixed(0)}` },
           ].map(({ icon, label, value }) => (
             <div key={label} className="bg-gray-50 rounded-xl p-2.5 sm:p-3">
               <div className="text-xs text-gray-400 mb-0.5">{icon} <span className="hidden sm:inline">{label}</span></div>
@@ -171,6 +171,17 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
             </div>
           ))}
         </div>
+
+        {/* Pickup address — shown to walkers so they know where to go */}
+        {role === 'WALKER' && b.address && (
+          <div className="bg-blue-50 border border-blue-100 rounded-xl px-3 py-2.5 mb-4 flex items-start gap-2">
+            <span className="text-base mt-0.5">📍</span>
+            <div>
+              <div className="text-xs font-bold text-blue-600 uppercase tracking-wide mb-0.5">Pickup address</div>
+              <div className="text-sm text-blue-900 font-medium">{b.address}</div>
+            </div>
+          </div>
+        )}
 
         {/* Message button — always visible for active bookings */}
         {(b.status === 'PENDING' || b.status === 'ACCEPTED' || b.status === 'COMPLETED') && (

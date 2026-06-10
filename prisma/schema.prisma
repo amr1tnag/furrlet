@@ -69,6 +69,7 @@ model Booking {
   totalPrice    Float
   paymentId     String   @default("")
   paymentStatus String   @default("UNPAID")
+  address       String   @default("")
   createdAt     DateTime @default(now())
   trackingActive Boolean   @default(false)
   walkStartedAt  DateTime?

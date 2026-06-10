@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   const user = await prisma.user.findUnique({ where: { email: session.user.email } })
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, walkerId, dogId, date, duration } = await req.json()
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, walkerId, dogId, date, duration, address } = await req.json()
 
   // Verify signature
   const body = razorpay_order_id + '|' + razorpay_payment_id
@@ -36,6 +36,7 @@ export async function POST(req: Request) {
       duration: parseInt(duration), totalPrice,
       paymentId: razorpay_payment_id,
       paymentStatus: 'PAID',
+      address: address || '',
     },
     include: { dog: true, walker: { select: { name: true, email: true } } },
   })
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
       ownerName: user.name,
       dogName: booking.dog.name,
       date, duration: parseInt(duration), totalPrice,
+      address: address || '',
     })
   } catch (_) {}
 

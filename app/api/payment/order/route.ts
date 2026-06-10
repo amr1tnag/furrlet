@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   const user = await prisma.user.findUnique({ where: { email: session.user.email } })
   if (!user || user.role !== 'OWNER') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { walkerId, dogId, date, duration } = await req.json()
+  const { walkerId, dogId, date, duration, address } = await req.json()
   const walkerProfile = await prisma.walkerProfile.findFirst({ where: { userId: walkerId } })
   if (!walkerProfile) return NextResponse.json({ error: 'Walker not found' }, { status: 404 })
 
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     amount: amountPaise,
     currency: 'INR',
     receipt: `booking_${Date.now()}`,
-    notes: { walkerId, dogId, ownerId: user.id, date, duration: String(duration) },
+    notes: { walkerId, dogId, ownerId: user.id, date, duration: String(duration), address: address || '' },
   })
 
   return NextResponse.json({

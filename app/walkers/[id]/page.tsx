@@ -13,9 +13,9 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
   const [walker, setWalker] = useState<any>(null)
   const [dogs, setDogs] = useState<any[]>([])
   const [reviews, setReviews] = useState<any[]>([])
-  const [form, setForm] = useState({ dogId: '', date: '', duration: '60' })
+  const [form, setForm] = useState({ dogId: '', date: '', duration: '60', address: '' })
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [confirmedBooking, setConfirmedBooking] = useState<any>(null)
   const [repeatBanner, setRepeatBanner] = useState(false)
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
       const orderRes = await fetch('/api/payment/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ walkerId: params.id, ...form }),
+        body: JSON.stringify({ walkerId: params.id, ...form, address: form.address }),
       })
       const order = await orderRes.json()
       if (!orderRes.ok) throw new Error(order.error)
@@ -73,8 +73,8 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
             }),
           })
           if (verifyRes.ok) {
-            setSuccess(true)
-            setTimeout(() => router.push('/bookings'), 2000)
+            const booking = await verifyRes.json()
+            setConfirmedBooking(booking)
           }
         },
         prefill: { name: '', email: '', contact: '' },
@@ -196,11 +196,40 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
           </div>
         )}
         <h2 className="font-black text-gray-900 text-xl mb-6">Book a Walk</h2>
-        {success ? (
-          <div className="text-center py-10">
-            <div className="text-5xl mb-4">✅</div>
-            <p className="text-green-600 font-bold text-lg">Payment successful!</p>
-            <p className="text-gray-400 text-sm mt-1">Booking request sent. Redirecting...</p>
+        {confirmedBooking ? (
+          <div className="space-y-5">
+            <div className="text-center pb-4 border-b border-gray-100">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-3">✅</div>
+              <h3 className="font-black text-gray-900 text-xl">Booking Confirmed!</h3>
+              <p className="text-gray-400 text-sm mt-1">Your booking request has been sent to {walker.user.name}.</p>
+            </div>
+
+            {/* Booking details */}
+            <div className="bg-gray-50 rounded-2xl divide-y divide-gray-100">
+              {[
+                { icon: '🪪', label: 'Booking ID', value: `#${confirmedBooking.id.slice(-8).toUpperCase()}` },
+                { icon: '🦮', label: 'Walker', value: walker.user.name },
+                { icon: '🐶', label: 'Dog', value: confirmedBooking.dog?.name || '—' },
+                { icon: '📅', label: 'Date', value: confirmedBooking.date },
+                { icon: '⏱', label: 'Duration', value: `${confirmedBooking.duration} min` },
+                { icon: '📍', label: 'Pickup address', value: confirmedBooking.address || '—' },
+                { icon: '💰', label: 'Amount paid', value: `₹${confirmedBooking.totalPrice}` },
+              ].map(({ icon, label, value }) => (
+                <div key={label} className="flex items-center justify-between px-4 py-3">
+                  <span className="text-gray-400 text-sm flex items-center gap-2"><span>{icon}</span>{label}</span>
+                  <span className="font-semibold text-gray-900 text-sm text-right max-w-[55%]">{value}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 text-sm text-amber-700">
+              <span className="font-semibold">What happens next?</span> The walker will accept or decline your request. You'll get an email once they respond.
+            </div>
+
+            <div className="flex gap-3">
+              <Link href="/bookings" className="btn-primary flex-1 text-center py-3 text-sm">View My Bookings</Link>
+              <Link href={`/messages/${confirmedBooking.id}`} className="flex-1 text-center py-3 text-sm rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:border-gray-300 transition-colors">💬 Message Walker</Link>
+            </div>
           </div>
         ) : (
           <form onSubmit={book} className="space-y-5">
@@ -234,6 +263,19 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
                   </button>
                 ))}
               </div>
+            </div>
+
+            <div>
+              <label className="label">Pickup address</label>
+              <textarea
+                required
+                rows={2}
+                placeholder="e.g. Flat 4B, Sunshine Apartments, MG Road, Bangalore"
+                value={form.address}
+                onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
+                className="input resize-none text-sm"
+              />
+              <p className="text-xs text-gray-400 mt-1">The walker will come here to pick up your dog.</p>
             </div>
 
             <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-5 border border-amber-100">
