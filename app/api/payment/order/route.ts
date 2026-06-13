@@ -22,12 +22,18 @@ export async function POST(req: NextRequest) {
   const totalPrice = dur === 30 ? 99 : dur === 45 ? 149 : 199
   const amountPaise = Math.round(totalPrice * 100) // Razorpay uses paise
 
-  const order = await getRazorpay().orders.create({
-    amount: amountPaise,
-    currency: 'INR',
-    receipt: `booking_${Date.now()}`,
-    notes: { walkerId, dogId, ownerId: user.id, date, duration: String(duration), address: address || '' },
-  })
+  let order
+  try {
+    order = await getRazorpay().orders.create({
+      amount: amountPaise,
+      currency: 'INR',
+      receipt: `booking_${Date.now()}`,
+      notes: { walkerId, dogId, ownerId: user.id, date, duration: String(duration), address: address || '' },
+    })
+  } catch (e: any) {
+    console.error('Razorpay order creation error:', JSON.stringify(e))
+    return NextResponse.json({ error: 'Payment gateway error', details: e?.error?.description || e?.message || String(e) }, { status: 500 })
+  }
 
   return NextResponse.json({
     orderId: order.id,
