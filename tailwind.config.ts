@@ -11,6 +11,9 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        cream: '#FAF5EE',
+        brand: { DEFAULT: '#E8960A', dark: '#C47C00', light: '#F5A623' },
+        brown: { DEFAULT: '#3D2800', medium: '#6B4F00', light: '#A07840' },
       },
       animation: {
         'fade-up': 'fadeUp 0.5s ease-out forwards',

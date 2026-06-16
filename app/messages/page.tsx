@@ -44,10 +44,10 @@ export default function MessagesPage() {
   const conversations = bookings.filter(b => b.status !== 'DECLINED')
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Messages</h1>
-        <p className="text-gray-500 text-sm mt-1">Chat with your {role === 'OWNER' ? 'walkers' : 'owners'}</p>
+    <div className="max-w-2xl mx-auto px-4 pt-6 pb-28">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-[#3D2800]">Messages</h1>
+        <p className="text-[#6B4F00] text-sm mt-0.5">Chat with your {role === 'OWNER' ? 'walkers' : 'owners'}</p>
       </div>
 
       {conversations.length === 0 ? (
@@ -68,13 +68,13 @@ export default function MessagesPage() {
 
             return (
               <Link key={b.id} href={`/messages/${b.id}`}
-                className="card p-4 flex items-center gap-4 hover:shadow-card-hover transition-all duration-200 cursor-pointer block">
+                className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-4 flex items-center gap-4 hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)] transition-all duration-200 cursor-pointer block">
                 <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-700 font-bold text-lg flex-shrink-0">
                   {otherName?.[0]?.toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-gray-900 truncate">{otherName}</span>
+                    <span className="font-semibold text-[#3D2800] truncate">{otherName}</span>
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-lg flex-shrink-0 ${statusColors[b.status] ?? 'bg-gray-100 text-gray-500'}`}>
                       {b.status}
                     </span>

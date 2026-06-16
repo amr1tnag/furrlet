@@ -60,18 +60,27 @@ export default function Dashboard() {
     : walkers.slice(0, 3)
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pb-8 pt-6">
+    <div className="max-w-2xl mx-auto px-4 pb-28 pt-6">
 
       {/* Top greeting bar */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-gray-400 text-sm">{greeting} 👋</p>
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight">{firstName}</h1>
+          <p className="text-[#A07840] text-sm">{greeting} 👋</p>
+          <h1 className="text-2xl font-black text-[#3D2800] tracking-tight">{firstName}</h1>
         </div>
-        <div className="w-11 h-11 bg-gradient-to-br from-amber-400 to-orange-400 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-amber-200">
-          {session?.user?.name?.[0]?.toUpperCase()}
+        <div className="relative">
+          <div className="w-11 h-11 bg-gradient-to-br from-amber-400 to-orange-400 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-amber-200">
+            {session?.user?.name?.[0]?.toUpperCase()}
+          </div>
+          {role === 'WALKER' && (
+            <span className="absolute -bottom-1 -right-1 bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full border-2 border-[#FAF5EE]">80%</span>
+          )}
         </div>
       </div>
+
+      {role === 'WALKER' && (
+        <p className="text-[#6B4F00] text-sm mb-4 -mt-4">Ready for today&apos;s paws?</p>
+      )}
 
       {/* Hero action card */}
       {role === 'OWNER' ? (

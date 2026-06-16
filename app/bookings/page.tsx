@@ -65,10 +65,25 @@ export default function Bookings() {
   const others = bookings.filter(b => b.status !== 'PENDING')
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Bookings</h1>
-        <p className="text-gray-500 text-sm mt-1">{role === 'WALKER' ? 'Manage your walk requests' : 'Track your booking history'}</p>
+    <div className="max-w-2xl mx-auto px-4 pt-6 pb-28">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🐾</span>
+          <span className="font-bold text-[#3D2800] text-xl">Furrlet</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="w-9 h-9 bg-white border border-[#F0D9B0] rounded-full flex items-center justify-center">
+            <svg className="w-4 h-4 text-[#6B4F00]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </button>
+          <div className="w-9 h-9 bg-amber-100 rounded-full flex items-center justify-center text-amber-700 font-bold text-sm">P</div>
+        </div>
+      </div>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-[#3D2800]">My Bookings</h1>
+        <p className="text-[#6B4F00] text-sm mt-0.5">Manage your furry friends&apos; adventures.</p>
       </div>
 
       {bookings.length === 0 ? (
@@ -119,6 +134,13 @@ export default function Bookings() {
           )}
         </div>
       )}
+
+      {/* FAB */}
+      {role === 'OWNER' && (
+        <Link href="/walkers" className="fixed bottom-24 right-4 w-14 h-14 bg-amber-500 hover:bg-amber-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-amber-200 text-2xl font-bold transition-all active:scale-95 z-40">
+          +
+        </Link>
+      )}
     </div>
   )
 }
@@ -128,7 +150,7 @@ function BookingCard({ b, role, reviewing, setReviewing, reviewForm, setReviewFo
   const isPending = b.status === 'PENDING'
 
   return (
-    <div className={`card overflow-hidden transition-all duration-200 hover:shadow-card-hover ${role === 'WALKER' && isPending ? 'border-amber-200 shadow-[0_0_0_2px_rgba(251,191,36,0.15)]' : ''}`}>
+    <div className={`bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] overflow-hidden transition-all duration-200 hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)] ${role === 'WALKER' && isPending ? 'border border-amber-200' : ''}`}>
       {/* Top accent for pending walker bookings */}
       {role === 'WALKER' && isPending && (
         <div className="h-1 bg-gradient-to-r from-amber-400 to-orange-400" />
