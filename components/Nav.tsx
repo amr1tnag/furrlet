@@ -10,8 +10,8 @@ export function Nav() {
   const pathname = usePathname()
   const { permission, subscribed, subscribe } = usePushNotifications()
 
-  // Hide nav on the landing page — it has its own header
-  if (pathname === '/') return null
+  // Hide nav on landing + auth pages — they have their own headers
+  if (pathname === '/' || pathname.startsWith('/auth')) return null
 
   return (
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
