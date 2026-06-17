@@ -27,6 +27,22 @@ function VerifyForm() {
     }
   }, [cooldown])
 
+  // Auto-send email OTP on mount for signin flow
+  useEffect(() => {
+    if (email) {
+      fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, method: 'email' }),
+      }).then(() => {
+        setSent(true)
+        setCooldown(60)
+        setTimeout(() => inputRefs.current[0]?.focus(), 100)
+      }).catch(() => {})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   async function sendOtp() {
     setError('')
     setLoading(true)

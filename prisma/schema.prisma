@@ -15,9 +15,11 @@ model User {
   role       String
   phone      String?
   isVerified Boolean   @default(false)
-  otpHash    String?
-  otpExpiry  DateTime?
-  createdAt  DateTime  @default(now())
+  otpHash             String?
+  otpExpiry           DateTime?
+  passwordResetToken  String?
+  passwordResetExpiry DateTime?
+  createdAt           DateTime  @default(now())
 
   walkerProfile     WalkerProfile?
   dogs              Dog[]
