@@ -3,6 +3,7 @@ import './globals.css'
 import { Providers } from './providers'
 import { Nav } from '@/components/Nav'
 import { BottomNav } from '@/components/BottomNav'
+import { MainWrapper } from '@/components/MainWrapper'
 
 export const metadata: Metadata = {
   title: 'Furrlet — Trusted Dog Walkers Near You',
@@ -42,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-gray-50 min-h-screen">
         <Providers>
           <Nav />
-          <main className="pb-20 sm:pb-0">{children}</main>
+          <MainWrapper>{children}</MainWrapper>
           <BottomNav />
         </Providers>
       </body>

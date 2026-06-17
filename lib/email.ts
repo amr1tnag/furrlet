@@ -155,6 +155,27 @@ export async function sendPasswordResetEmail({ name, email, token }: { name: str
   })
 }
 
+export async function sendReviewRequestEmail({ ownerEmail, ownerName, walkerName, dogName, date, bookingId }: {
+  ownerEmail: string; ownerName: string; walkerName: string; dogName: string; date: string; bookingId: string
+}) {
+  const url = `https://furrlet.in/bookings`
+  await getResend().emails.send({
+    from: FROM,
+    to: ownerEmail,
+    subject: `How was ${dogName}'s walk with ${walkerName}? ⭐`,
+    html: `
+      <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#FAF5EE;border-radius:16px;">
+        <div style="font-size:40px;margin-bottom:16px;">⭐</div>
+        <h2 style="font-size:22px;font-weight:800;color:#3D2800;margin:0 0 8px;">How was the walk, ${ownerName}?</h2>
+        <p style="color:#6B4F00;font-size:15px;margin:0 0 8px;"><strong>${dogName}</strong>'s walk with <strong>${walkerName}</strong> on <strong>${date}</strong> is complete!</p>
+        <p style="color:#6B4F00;font-size:15px;margin:0 0 24px;">Leave a quick rating to help other dog owners and reward great walkers.</p>
+        <a href="${url}" style="display:block;text-align:center;background:#E8960A;color:white;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;text-decoration:none;margin-bottom:24px;">Rate the Walk ⭐</a>
+        <p style="color:#A07840;font-size:12px;text-align:center;">It only takes 10 seconds!</p>
+      </div>
+    `,
+  })
+}
+
 export async function sendRefundEmail({ ownerEmail, ownerName, dogName, date, amount }: {
   ownerEmail: string
   ownerName: string

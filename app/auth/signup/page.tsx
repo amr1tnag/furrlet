@@ -109,7 +109,7 @@ function SignUpForm() {
       const data = await res.json()
       if (!res.ok) { setOtpError(data.error); setOtp(['', '', '', '', '', '']); inputRefs.current[0]?.focus(); return }
       await signIn('credentials', { email: form.email, password: form.password, redirect: false })
-      router.push('/dashboard')
+      router.push('/onboarding')
     } catch {
       setOtpError('Something went wrong. Please try again.')
     } finally {
@@ -119,18 +119,29 @@ function SignUpForm() {
 
   if (step === 2) {
     return (
-      <div className="min-h-screen bg-[#FAF5EE] flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-sm">
-          <div className="text-center mb-6">
-            <div className="text-5xl mb-4">📧</div>
-            <h1 className="text-2xl font-bold text-[#3D2800]">Verify your email</h1>
-            <p className="text-[#6B4F00] text-sm mt-2">
-              We sent a 6-digit code to <span className="font-semibold">{form.email}</span>
+      <div className="h-screen bg-[#FAF5EE] flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-4 pb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🐾</span>
+            <span className="text-xl font-black text-[#3D2800]">Furrlet</span>
+          </div>
+          <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1">
+            <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
+            <span className="text-xs font-semibold text-amber-700">Step 2 of 2</span>
+          </div>
+        </div>
+
+        <div className="flex-1 flex flex-col justify-center px-5 pb-4 gap-5">
+          <div className="text-center">
+            <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 border border-amber-200">📧</div>
+            <h1 className="text-2xl font-black text-[#3D2800]">Check your email</h1>
+            <p className="text-[#9B7B4F] text-sm mt-1">
+              6-digit code sent to <span className="font-semibold text-[#6B4F00]">{form.email}</span>
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-6">
-            <div className="space-y-6">
+          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-5 space-y-4">
               {/* OTP boxes */}
               <div className="flex gap-2 justify-center">
                 {otp.map((digit, i) => (
@@ -205,31 +216,39 @@ function SignUpForm() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 bg-gray-50">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <span className="text-3xl">🐾</span>
-            <span className="font-bold text-xl text-gray-900">Furrlet</span>
-          </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
-          <p className="text-gray-500 text-sm mt-1">Free forever. No credit card required.</p>
+    <div className="h-screen bg-[#FAF5EE] flex flex-col overflow-hidden relative">
+      <div className="absolute bottom-0 right-0 w-48 h-48 bg-amber-100 rounded-full blur-3xl opacity-60 translate-x-1/2 translate-y-1/2 pointer-events-none" />
+
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-4 pb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🐾</span>
+          <span className="text-xl font-black text-[#3D2800]">Furrlet</span>
+        </div>
+        <Link href="/auth/signin" className="text-sm font-semibold text-[#E8960A] hover:text-[#C47C00] transition-colors">
+          Sign in
+        </Link>
+      </div>
+
+      <div className="flex-1 flex flex-col justify-center px-5 pb-4 gap-4 relative">
+        <div>
+          <h1 className="text-2xl font-black text-[#3D2800]">Create account</h1>
+          <p className="text-[#9B7B4F] text-sm mt-0.5">Free forever. No credit card required.</p>
         </div>
 
-        <div className="card p-8">
-          <form onSubmit={submit} className="space-y-5">
-            {/* Role picker */}
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-5">
+          <form onSubmit={submit} className="space-y-3">
             <div>
-              <label className="label">I am a...</label>
-              <div className="grid grid-cols-2 gap-3">
+              <label className="block text-sm font-semibold text-[#3D2800] mb-2">I am a...</label>
+              <div className="grid grid-cols-2 gap-2">
                 {[['OWNER', '🐕', 'Dog Owner'], ['WALKER', '🦮', 'Dog Walker']].map(([val, icon, label]) => (
                   <button key={val} type="button" onClick={() => setForm(f => ({ ...f, role: val }))}
-                    className={`py-3 px-4 rounded-xl border-2 text-sm font-semibold transition-all ${
+                    className={`py-2.5 px-3 rounded-xl border-2 text-sm font-semibold transition-all ${
                       form.role === val
                         ? 'border-amber-500 bg-amber-50 text-amber-700'
-                        : 'border-gray-200 text-gray-600 hover:border-gray-300 bg-white'
+                        : 'border-[#F0D9B0] text-[#6B4F00] hover:border-amber-300 bg-white'
                     }`}>
-                    <span className="text-lg block mb-0.5">{icon}</span>
+                    <span className="text-base block mb-0.5">{icon}</span>
                     {label}
                   </button>
                 ))}
@@ -237,17 +256,19 @@ function SignUpForm() {
             </div>
 
             <div>
-              <label className="label">Full name</label>
+              <label className="block text-sm font-semibold text-[#3D2800] mb-1.5">Full name</label>
               <input type="text" required placeholder="Alex Johnson" value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="input" />
+                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                className="w-full bg-[#FDF0E0] border border-[#F0D9B0] rounded-xl px-4 py-3 text-sm text-[#3D2800] placeholder-[#A07840] focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all" />
             </div>
             <div>
-              <label className="label">Email address</label>
+              <label className="block text-sm font-semibold text-[#3D2800] mb-1.5">Email address</label>
               <input type="email" required placeholder="you@example.com" value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className="input" />
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                className="w-full bg-[#FDF0E0] border border-[#F0D9B0] rounded-xl px-4 py-3 text-sm text-[#3D2800] placeholder-[#A07840] focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all" />
             </div>
             <div>
-              <label className="label">Password</label>
+              <label className="block text-sm font-semibold text-[#3D2800] mb-1.5">Password</label>
               <div className="relative">
                 <input
                   type={showPw ? 'text' : 'password'}
@@ -265,20 +286,19 @@ function SignUpForm() {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl">
-                {error}
-              </div>
+              <div className="bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl">{error}</div>
             )}
 
-            <button type="submit" disabled={loading} className="btn-primary w-full py-3 text-base">
-              {loading ? 'Creating account...' : 'Create free account'}
+            <button type="submit" disabled={loading}
+              className="w-full bg-[#E8960A] hover:bg-[#C47C00] text-white font-bold py-3.5 rounded-2xl text-base transition-all active:scale-[0.98] disabled:opacity-50 shadow-sm shadow-amber-200">
+              {loading ? 'Creating account...' : 'Continue →'}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
+        <p className="text-center text-xs text-[#A07840]">
           Already have an account?{' '}
-          <Link href="/auth/signin" className="text-amber-600 font-semibold hover:text-amber-700">Sign in</Link>
+          <Link href="/auth/signin" className="font-bold text-[#E8960A] hover:text-[#C47C00]">Sign in</Link>
         </p>
       </div>
     </div>

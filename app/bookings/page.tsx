@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { ReviewModal } from '@/components/ReviewModal'
 
 const statusConfig: Record<string, { label: string; bg: string; text: string; icon: string }> = {
   PENDING:   { label: 'Pending',   bg: '#FFF7E0', text: '#C47D00', icon: '🕐' },
@@ -20,22 +21,6 @@ const avatarColors = [
   { bg: '#FAD7D7', text: '#A93226' },
 ]
 
-function StarPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
-  const [hover, setHover] = useState(0)
-  return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map(s => (
-        <button key={s} type="button"
-          onMouseEnter={() => setHover(s)} onMouseLeave={() => setHover(0)}
-          onClick={() => onChange(s)}
-          className="text-2xl transition-transform hover:scale-110"
-          style={{ color: (hover || value) >= s ? '#F59E0B' : '#E5E7EB' }}>
-          ★
-        </button>
-      ))}
-    </div>
-  )
-}
 
 export default function Bookings() {
   const { data: session } = useSession()
@@ -43,8 +28,6 @@ export default function Bookings() {
   const [bookings, setBookings] = useState<any[]>([])
   const [tab, setTab] = useState<'upcoming' | 'past'>('upcoming')
   const [reviewing, setReviewing] = useState<string | null>(null)
-  const [reviewForm, setReviewForm] = useState({ rating: 0, comment: '' })
-  const [submitting, setSubmitting] = useState(false)
   const [acting, setActing] = useState<string | null>(null)
 
   const load = () => fetch('/api/bookings').then(r => r.json()).then(d => setBookings(Array.isArray(d) ? d : []))
@@ -54,20 +37,6 @@ export default function Bookings() {
     setActing(id + status)
     await fetch(`/api/bookings/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) })
     setActing(null)
-    load()
-  }
-
-  async function submitReview(bookingId: string) {
-    if (!reviewForm.rating) return
-    setSubmitting(true)
-    await fetch('/api/reviews', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bookingId, ...reviewForm }),
-    })
-    setReviewing(null)
-    setReviewForm({ rating: 0, comment: '' })
-    setSubmitting(false)
     load()
   }
 
@@ -293,34 +262,23 @@ export default function Bookings() {
                               </div>
                               {b.review.comment && <p className="text-sm" style={{ color: '#7A5C3A' }}>{b.review.comment}</p>}
                             </div>
-                          ) : reviewing === b.id ? (
-                            <div className="rounded-xl p-4" style={{ backgroundColor: '#FFF7E0' }}>
-                              <p className="text-sm font-semibold mb-3" style={{ color: '#3D2800' }}>How was the walk?</p>
-                              <StarPicker value={reviewForm.rating} onChange={r => setReviewForm((f: any) => ({ ...f, rating: r }))} />
-                              <textarea rows={2} value={reviewForm.comment}
-                                onChange={e => setReviewForm((f: any) => ({ ...f, comment: e.target.value }))}
-                                placeholder="Leave a comment (optional)..."
-                                className="w-full mt-3 rounded-xl p-3 text-sm resize-none outline-none"
-                                style={{ backgroundColor: '#FDF0E0', color: '#3D2800' }} />
-                              <div className="flex gap-2 mt-3">
-                                <button onClick={() => submitReview(b.id)} disabled={!reviewForm.rating || submitting}
-                                  className="flex-1 py-2 rounded-xl font-bold text-sm text-white disabled:opacity-50"
-                                  style={{ backgroundColor: '#E8960A' }}>
-                                  {submitting ? 'Submitting...' : 'Submit Review'}
-                                </button>
-                                <button onClick={() => setReviewing(null)}
-                                  className="px-4 py-2 rounded-xl font-semibold text-sm border"
-                                  style={{ borderColor: '#E5E7EB', color: '#6B7280' }}>
-                                  Cancel
-                                </button>
-                              </div>
-                            </div>
                           ) : (
-                            <button onClick={() => setReviewing(b.id)}
-                              className="flex items-center gap-1.5 text-sm font-semibold"
-                              style={{ color: '#E8960A' }}>
-                              <span>⭐</span> Leave a review
-                            </button>
+                            <>
+                              {reviewing === b.id && (
+                                <ReviewModal
+                                  booking={b}
+                                  onClose={() => setReviewing(null)}
+                                  onSubmitted={() => { setReviewing(null); load() }}
+                                />
+                              )}
+                              {reviewing !== b.id && (
+                                <button onClick={() => setReviewing(b.id)}
+                                  className="w-full py-3 rounded-2xl border-2 font-bold text-sm flex items-center justify-center gap-2"
+                                  style={{ borderColor: '#E8960A', color: '#E8960A', backgroundColor: '#FFF7E0' }}>
+                                  <span>⭐</span> Rate this walk
+                                </button>
+                              )}
+                            </>
                           )}
                         </>
                       )}

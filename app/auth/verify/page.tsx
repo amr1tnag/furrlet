@@ -91,7 +91,7 @@ function VerifyForm() {
       const data = await res.json()
       if (!res.ok) { setError(data.error); setOtp(['', '', '', '', '', '']); inputRefs.current[0]?.focus(); return }
       await signIn('credentials', { email, password, redirect: false })
-      router.push('/onboarding')
+      router.push('/dashboard')
     } catch {
       setError('Something went wrong. Please try again.')
     } finally {
@@ -101,40 +101,44 @@ function VerifyForm() {
 
   if (!email) {
     return (
-      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#FAF5EE] flex items-center justify-center px-4">
         <div className="text-center">
-          <p className="text-gray-500 mb-4">Invalid verification link.</p>
-          <Link href="/auth/signup" className="text-amber-600 font-semibold">Back to sign up</Link>
+          <p className="text-[#6B4F00] mb-4">Invalid verification link.</p>
+          <Link href="/auth/signup" className="text-[#E8960A] font-semibold">Back to sign up</Link>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 bg-gray-50">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <span className="text-3xl">🐾</span>
-            <span className="font-bold text-xl text-gray-900">Furrlet</span>
-          </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Verify your account</h1>
-          <p className="text-gray-500 text-sm mt-1">One quick step to keep your account secure</p>
+    <div className="h-screen bg-[#FAF5EE] flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-4 pb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🐾</span>
+          <span className="text-xl font-black text-[#3D2800]">Furrlet</span>
+        </div>
+      </div>
+
+      <div className="flex-1 flex flex-col justify-center px-5 pb-4 gap-5">
+        <div className="text-center">
+          <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 border border-amber-200">🔐</div>
+          <h1 className="text-2xl font-black text-[#3D2800]">Verify your account</h1>
+          <p className="text-[#9B7B4F] text-sm mt-1">One quick step to keep your account secure</p>
         </div>
 
-        <div className="card p-8">
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-5">
           {!sent ? (
-            <div className="space-y-6">
-              {/* Method picker */}
+            <div className="space-y-5">
               <div>
-                <label className="label mb-3">How would you like to verify?</label>
+                <label className="block text-sm font-semibold text-[#3D2800] mb-3">How would you like to verify?</label>
                 <div className="grid grid-cols-2 gap-3">
                   {([['email', '📧', 'Email OTP'], ['phone', '📱', 'Phone OTP']] as const).map(([val, icon, label]) => (
                     <button key={val} type="button" onClick={() => { setMethod(val); setError('') }}
                       className={`py-3 px-4 rounded-xl border-2 text-sm font-semibold transition-all ${
                         method === val
                           ? 'border-amber-500 bg-amber-50 text-amber-700'
-                          : 'border-gray-200 text-gray-600 hover:border-gray-300 bg-white'
+                          : 'border-[#F0D9B0] text-[#6B4F00] hover:border-amber-300 bg-white'
                       }`}>
                       <span className="text-lg block mb-0.5">{icon}</span>
                       {label}
@@ -144,22 +148,22 @@ function VerifyForm() {
               </div>
 
               {method === 'email' ? (
-                <div className="bg-gray-50 rounded-xl px-4 py-3 flex items-center gap-3">
+                <div className="bg-[#FDF0E0] rounded-xl px-4 py-3 flex items-center gap-3">
                   <span className="text-xl">📧</span>
                   <div>
-                    <div className="text-xs text-gray-400">Sending code to</div>
-                    <div className="font-semibold text-gray-800 text-sm">{email}</div>
+                    <div className="text-xs text-[#A07840]">Sending code to</div>
+                    <div className="font-semibold text-[#3D2800] text-sm">{email}</div>
                   </div>
                 </div>
               ) : (
                 <div>
-                  <label className="label">Phone number</label>
-                  <div className="flex gap-2 items-center input px-3">
-                    <span className="text-gray-500 text-sm font-medium">+91</span>
+                  <label className="block text-sm font-semibold text-[#3D2800] mb-1.5">Phone number</label>
+                  <div className="flex gap-2 items-center bg-[#FDF0E0] border border-[#F0D9B0] rounded-xl px-3 py-3">
+                    <span className="text-[#6B4F00] text-sm font-medium">+91</span>
                     <input
                       type="tel" placeholder="98765 43210" value={phone}
                       onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                      className="flex-1 outline-none bg-transparent text-sm"
+                      className="flex-1 outline-none bg-transparent text-sm text-[#3D2800] placeholder-[#A07840]"
                       maxLength={10}
                     />
                   </div>
@@ -173,21 +177,20 @@ function VerifyForm() {
               <button
                 onClick={sendOtp}
                 disabled={loading || (method === 'phone' && phone.length < 10)}
-                className="btn-primary w-full py-3 text-base disabled:opacity-50">
+                className="w-full bg-[#E8960A] hover:bg-[#C47C00] text-white font-bold py-3.5 rounded-2xl text-base transition-all active:scale-[0.98] disabled:opacity-50">
                 {loading ? 'Sending...' : `Send OTP to ${method === 'email' ? 'email' : 'phone'}`}
               </button>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div className="text-center">
                 <div className="text-4xl mb-3">{method === 'email' ? '📧' : '📱'}</div>
-                <p className="text-gray-700 font-semibold">Enter the 6-digit code</p>
-                <p className="text-gray-400 text-sm mt-1">
-                  Sent to <span className="font-medium text-gray-600">{method === 'email' ? email : `+91 ${phone}`}</span>
+                <p className="text-[#3D2800] font-semibold">Enter the 6-digit code</p>
+                <p className="text-[#A07840] text-sm mt-1">
+                  Sent to <span className="font-medium text-[#6B4F00]">{method === 'email' ? email : `+91 ${phone}`}</span>
                 </p>
               </div>
 
-              {/* OTP boxes */}
               <div className="flex gap-2 justify-center">
                 {otp.map((digit, i) => (
                   <input
@@ -197,7 +200,7 @@ function VerifyForm() {
                     onChange={e => handleOtpInput(i, e.target.value)}
                     onKeyDown={e => handleOtpKeyDown(i, e)}
                     className={`w-11 h-12 text-center text-xl font-bold border-2 rounded-xl outline-none transition-all ${
-                      digit ? 'border-amber-400 bg-amber-50 text-amber-700' : 'border-gray-200 bg-white text-gray-900'
+                      digit ? 'border-amber-400 bg-amber-50 text-amber-700' : 'border-[#F0D9B0] bg-[#FDF0E0] text-[#3D2800]'
                     } focus:border-amber-400`}
                   />
                 ))}
@@ -210,16 +213,16 @@ function VerifyForm() {
               <button
                 onClick={() => verifyOtp()}
                 disabled={verifying || otp.join('').length < 6}
-                className="btn-primary w-full py-3 text-base disabled:opacity-50">
+                className="w-full bg-[#E8960A] hover:bg-[#C47C00] text-white font-bold py-3.5 rounded-2xl text-base transition-all active:scale-[0.98] disabled:opacity-50">
                 {verifying ? 'Verifying...' : 'Verify account'}
               </button>
 
               <div className="text-center">
                 {cooldown > 0 ? (
-                  <p className="text-gray-400 text-sm">Resend in {cooldown}s</p>
+                  <p className="text-[#A07840] text-sm">Resend in {cooldown}s</p>
                 ) : (
                   <button onClick={() => { setSent(false); setOtp(['', '', '', '', '', '']); setError('') }}
-                    className="text-amber-600 text-sm font-semibold hover:text-amber-700">
+                    className="text-[#E8960A] text-sm font-semibold hover:text-[#C47C00]">
                     Resend code
                   </button>
                 )}
@@ -228,9 +231,9 @@ function VerifyForm() {
           )}
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-[#A07840] mt-6">
           Wrong account?{' '}
-          <Link href="/auth/signup" className="text-amber-600 font-semibold">Start over</Link>
+          <Link href="/auth/signup" className="text-[#E8960A] font-semibold">Start over</Link>
         </p>
       </div>
     </div>

@@ -2,75 +2,121 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#FAF5EE] flex flex-col items-center justify-center px-4 py-16">
-      {/* Logo circle */}
-      <div className="w-24 h-24 bg-amber-500 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-amber-200">
-        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-          <ellipse cx="10" cy="14" rx="4" ry="5" fill="white" opacity="0.9"/>
-          <ellipse cx="34" cy="14" rx="4" ry="5" fill="white" opacity="0.9"/>
-          <ellipse cx="18" cy="8" rx="4" ry="5" fill="white" opacity="0.9"/>
-          <ellipse cx="26" cy="8" rx="4" ry="5" fill="white" opacity="0.9"/>
-          <path d="M8 22c0-7.732 6.268-14 14-14s14 6.268 14 14c0 5.5-2 9-6 11l-8 3-8-3c-4-2-6-5.5-6-11z" fill="white"/>
-        </svg>
-      </div>
+    <div className="h-screen bg-[#FAF5EE] flex flex-col overflow-hidden relative">
+      {/* Background blobs */}
+      <div className="absolute top-0 right-0 w-48 h-48 bg-amber-100 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-40 h-40 bg-orange-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
-      {/* Brand name */}
-      <h1 className="text-4xl font-bold text-[#3D2800] mb-2 tracking-tight">Furrlet</h1>
-      <p className="text-[#6B4F00] text-base text-center mb-10 max-w-xs leading-relaxed">
-        Every tail deserves a happy walk
-      </p>
-
-      {/* Role cards */}
-      <div className="w-full max-w-sm space-y-4 mb-8">
-        {/* Dog Parent card */}
-        <Link href="/auth/signup?role=owner"
-          className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all duration-200">
-          <div className="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">🐕</div>
-          <div className="flex-1">
-            <div className="font-bold text-[#3D2800] text-base">I&apos;m a Dog Parent</div>
-            <div className="text-[#6B4F00] text-sm mt-0.5">Find the perfect walker for your pup</div>
-          </div>
-          <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </Link>
-
-        {/* Walker card */}
-        <Link href="/auth/signup?role=walker"
-          className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all duration-200">
-          <div className="w-14 h-14 bg-amber-50 rounded-xl flex items-center justify-center text-3xl flex-shrink-0">🦮</div>
-          <div className="flex-1">
-            <div className="font-bold text-[#3D2800] text-base">I&apos;m a Walker</div>
-            <div className="text-[#6B4F00] text-sm mt-0.5">Earn by spending time with dogs</div>
-          </div>
-          <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
+      {/* Header */}
+      <div className="relative flex items-center justify-between px-5 pt-4 pb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🐾</span>
+          <span className="text-xl font-black text-[#3D2800]">Furrlet</span>
+        </div>
+        <Link href="/auth/signin"
+          className="bg-amber-500 text-white text-sm font-bold px-4 py-2 rounded-full shadow-sm shadow-amber-200 active:scale-95 transition-transform">
+          Sign in
         </Link>
       </div>
 
-      {/* Sign in link */}
-      <Link href="/auth/signin"
-        className="w-full max-w-sm text-center border-2 border-[#E8960A] text-[#E8960A] font-semibold py-3 rounded-2xl hover:bg-amber-50 active:scale-[0.98] transition-all duration-200">
-        Already have an account? Sign in
-      </Link>
+      {/* Main content — fills remaining height */}
+      <div className="relative flex-1 flex flex-col items-center justify-evenly px-5 pb-4">
 
-      {/* Trust badges */}
-      <div className="flex items-center gap-6 mt-12 text-[#6B4F00]">
-        <div className="text-center">
-          <div className="text-lg font-black text-[#E8960A]">500+</div>
-          <div className="text-xs">Happy Dogs</div>
+        {/* Logo + tagline */}
+        <div className="flex flex-col items-center gap-2">
+          <div className="relative">
+            <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-[22px] flex items-center justify-center shadow-lg shadow-amber-200 rotate-3">
+              <span className="text-3xl -rotate-3">🐾</span>
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-[#FAF5EE] flex items-center justify-center">
+              <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+          </div>
+          <div className="text-center">
+            <p className="text-[#9B7B4F] text-sm">Trusted dog walking, near you</p>
+            <div className="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1 mt-1.5">
+              <div className="flex -space-x-1">
+                {['🐩','🐕','🦮'].map((dog, i) => (
+                  <div key={i} className="w-4 h-4 rounded-full bg-amber-100 border border-white flex items-center justify-center text-[9px]">{dog}</div>
+                ))}
+              </div>
+              <span className="text-[11px] font-semibold text-amber-700">500+ happy pups this month</span>
+            </div>
+          </div>
         </div>
-        <div className="w-px h-8 bg-[#E8D5B0]" />
-        <div className="text-center">
-          <div className="text-lg font-black text-[#E8960A]">200+</div>
-          <div className="text-xs">Walkers</div>
+
+        {/* Role cards */}
+        <div className="w-full space-y-3">
+          <Link href="/auth/signup?role=owner"
+            className="group flex items-center gap-3 bg-white rounded-2xl p-3.5 border border-[#F0E4D0] shadow-[0_2px_12px_rgba(232,150,10,0.08)] hover:border-amber-300 active:scale-[0.98] transition-all duration-200">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-50 to-orange-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🐕</div>
+            <div className="flex-1 min-w-0">
+              <div className="font-bold text-[#3D2800] text-[15px]">I&apos;m a Dog Parent</div>
+              <div className="text-[#9B7B4F] text-xs mt-0.5">Book trusted local walkers</div>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">GPS tracked</span>
+                <span className="text-[10px] font-semibold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">Verified walkers</span>
+              </div>
+            </div>
+            <div className="w-7 h-7 rounded-full bg-amber-50 group-hover:bg-amber-500 flex items-center justify-center transition-colors duration-200 flex-shrink-0">
+              <svg className="w-3.5 h-3.5 text-amber-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
+
+          <Link href="/auth/signup?role=walker"
+            className="group flex items-center gap-3 bg-white rounded-2xl p-3.5 border border-[#F0E4D0] shadow-[0_2px_12px_rgba(232,150,10,0.08)] hover:border-amber-300 active:scale-[0.98] transition-all duration-200">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-50 to-orange-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🦮</div>
+            <div className="flex-1 min-w-0">
+              <div className="font-bold text-[#3D2800] text-[15px]">I&apos;m a Walker</div>
+              <div className="text-[#9B7B4F] text-xs mt-0.5">Earn on your own schedule</div>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-[10px] font-semibold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-full">₹200–500/hr</span>
+                <span className="text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full">Flexible hours</span>
+              </div>
+            </div>
+            <div className="w-7 h-7 rounded-full bg-amber-50 group-hover:bg-amber-500 flex items-center justify-center transition-colors duration-200 flex-shrink-0">
+              <svg className="w-3.5 h-3.5 text-amber-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
         </div>
-        <div className="w-px h-8 bg-[#E8D5B0]" />
-        <div className="text-center">
-          <div className="text-lg font-black text-[#E8960A]">4.9★</div>
-          <div className="text-xs">Avg Rating</div>
+
+        {/* Stats */}
+        <div className="w-full bg-white rounded-2xl border border-[#F0E4D0] px-4 py-3 grid grid-cols-3 divide-x divide-[#F0E4D0]">
+          {[
+            { value: '500+', label: 'Happy dogs', icon: '🐶' },
+            { value: '200+', label: 'Walkers', icon: '🏃' },
+            { value: '4.9★', label: 'Avg rating', icon: '⭐' },
+          ].map(({ value, label, icon }) => (
+            <div key={label} className="text-center px-2">
+              <div className="text-sm">{icon}</div>
+              <div className="text-sm font-black text-[#E8960A] leading-tight">{value}</div>
+              <div className="text-[10px] text-[#9B7B4F]">{label}</div>
+            </div>
+          ))}
         </div>
+
+        {/* Features + sign in */}
+        <div className="flex flex-col items-center gap-2 w-full">
+          <div className="flex items-center justify-center gap-5">
+            {[
+              { icon: '📍', text: 'Live GPS' },
+              { icon: '🛡️', text: 'ID Verified' },
+              { icon: '💬', text: 'In-app chat' },
+            ].map(({ icon, text }) => (
+              <div key={text} className="flex items-center gap-1 text-[#9B7B4F]">
+                <span className="text-xs">{icon}</span>
+                <span className="text-[11px] font-medium">{text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   )

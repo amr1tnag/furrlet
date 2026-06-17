@@ -1,19 +1,24 @@
 'use client'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
 import { usePushNotifications } from '@/hooks/usePushNotifications'
 
 export function Nav() {
   const { data: session } = useSession()
   const role = (session?.user as any)?.role
+  const pathname = usePathname()
   const { permission, subscribed, subscribe } = usePushNotifications()
+
+  // Hide nav on landing + auth pages — they have their own headers
+  if (pathname === '/' || pathname.startsWith('/auth')) return null
 
   return (
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={session ? '/dashboard' : '/'} className="flex items-center gap-2">
             <span className="text-2xl">🐾</span>
             <span className="font-black text-lg tracking-tight text-gray-900">Furrlet</span>
           </Link>

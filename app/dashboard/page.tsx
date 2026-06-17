@@ -3,6 +3,7 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { ReviewModal } from '@/components/ReviewModal'
 
 const statusStyles: Record<string, string> = {
   PENDING:   'bg-yellow-50 text-yellow-600',
@@ -30,12 +31,15 @@ export default function Dashboard() {
   const [bookings, setBookings] = useState<any[]>([])
   const [dogs, setDogs] = useState<any[]>([])
   const [walkers, setWalkers] = useState<any[]>([])
+  const [reviewingBooking, setReviewingBooking] = useState<any>(null)
 
   useEffect(() => { if (status === 'unauthenticated') router.push('/auth/signin') }, [status, router])
 
+  const fetchBookings = () => fetch('/api/bookings').then(r => r.json()).then(d => setBookings(Array.isArray(d) ? d : []))
+
   useEffect(() => {
     if (!session) return
-    fetch('/api/bookings').then(r => r.json()).then(d => setBookings(Array.isArray(d) ? d : []))
+    fetchBookings()
     if (role === 'OWNER') {
       fetch('/api/dogs').then(r => r.json()).then(d => setDogs(Array.isArray(d) ? d : []))
       fetch('/api/walkers').then(r => r.json()).then(d => setWalkers(Array.isArray(d) ? d : []))
@@ -89,6 +93,38 @@ export default function Dashboard() {
           {session?.user?.name?.[0]?.toUpperCase()}
         </div>
       </div>
+
+      {/* Review prompt for unreviewed completed walks */}
+      {role === 'OWNER' && (() => {
+        const unreviewed = bookings.filter(b => b.status === 'COMPLETED' && !b.review)
+        if (unreviewed.length === 0) return null
+        const b = unreviewed[0]
+        return (
+          <div className="mx-4 mb-4 bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">⭐</div>
+              <div className="flex-1">
+                <p className="font-bold text-[#3D2800] text-sm">Rate {b.dog?.name}&apos;s walk</p>
+                <p className="text-[#9B7B4F] text-xs mt-0.5">with {b.walker?.name} · {b.date}</p>
+              </div>
+              <button onClick={() => setReviewingBooking(b)}
+                className="text-xs font-bold text-white bg-[#E8960A] px-3 py-1.5 rounded-full">
+                Rate
+              </button>
+            </div>
+            {unreviewed.length > 1 && (
+              <p className="text-xs text-[#9B7B4F] mt-2">+{unreviewed.length - 1} more walk{unreviewed.length > 2 ? 's' : ''} to review</p>
+            )}
+          </div>
+        )
+      })()}
+      {reviewingBooking && (
+        <ReviewModal
+          booking={reviewingBooking}
+          onClose={() => setReviewingBooking(null)}
+          onSubmitted={() => { setReviewingBooking(null); fetchBookings() }}
+        />
+      )}
 
       {/* Earnings card (walker) or CTA card (owner) */}
       {role === 'WALKER' ? (
