@@ -52,12 +52,12 @@ export function ReviewModal({ booking, onClose, onSubmitted }: Props) {
       <div className="absolute inset-0 bg-black/40" />
 
       {/* Sheet */}
-      <div className="relative w-full bg-[#FAF5EE] rounded-t-3xl p-6 pb-10 shadow-2xl"
+      <div className="relative w-full bg-[#FAF5EE] rounded-t-3xl p-6 pb-28 shadow-2xl"
         onClick={e => e.stopPropagation()}>
         {/* Handle */}
-        <div className="w-10 h-1 bg-[#E8D5B0] rounded-full mx-auto mb-6" />
+        <div className="w-10 h-1 bg-[#E8D5B0] rounded-full mx-auto mb-4" />
 
-        <div className="text-center mb-6">
+        <div className="text-center mb-4">
           <div className="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3">⭐</div>
           <h2 className="text-xl font-black text-[#3D2800]">Rate your walk</h2>
           <p className="text-[#9B7B4F] text-sm mt-1">
@@ -71,7 +71,7 @@ export function ReviewModal({ booking, onClose, onSubmitted }: Props) {
         )}
 
         <textarea
-          rows={3}
+          rows={2}
           value={comment}
           onChange={e => setComment(e.target.value)}
           placeholder="Share your experience (optional)..."
