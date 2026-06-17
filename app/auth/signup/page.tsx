@@ -142,62 +142,72 @@ function SignUpForm() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-5 space-y-4">
-            <div className="flex gap-2 justify-center">
-              {otp.map((digit, i) => (
-                <input
-                  key={i}
-                  ref={el => { inputRefs.current[i] = el }}
-                  type="text" inputMode="numeric" maxLength={1} value={digit}
-                  onChange={e => handleOtpInput(i, e.target.value)}
-                  onKeyDown={e => handleOtpKeyDown(i, e)}
-                  className={`w-11 h-12 text-center text-xl font-bold border-2 rounded-xl outline-none transition-all ${
-                    digit ? 'border-amber-400 bg-amber-50 text-amber-700' : 'border-[#F0D9B0] bg-[#FDF0E0] text-[#3D2800]'
-                  } focus:border-amber-400`}
-                />
-              ))}
-            </div>
+              {/* OTP boxes */}
+              <div className="flex gap-2 justify-center">
+                {otp.map((digit, i) => (
+                  <input
+                    key={i}
+                    ref={el => { inputRefs.current[i] = el }}
+                    type="text" inputMode="numeric" maxLength={1} value={digit}
+                    onChange={e => handleOtpInput(i, e.target.value)}
+                    onKeyDown={e => handleOtpKeyDown(i, e)}
+                    className={`w-11 h-12 text-center text-xl font-bold border-2 rounded-xl outline-none transition-all ${
+                      digit ? 'border-amber-400 bg-amber-50 text-amber-700' : 'border-[#F0D9B0] bg-[#FDF0E0] text-[#3D2800]'
+                    } focus:border-amber-400`}
+                  />
+                ))}
+              </div>
 
-            {otpError && (
-              <div className="bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl text-center">{otpError}</div>
-            )}
-
-            <button
-              onClick={() => verifyOtp()}
-              disabled={verifying || otp.join('').length < 6}
-              className="w-full bg-[#E8960A] hover:bg-[#C47C00] text-white font-bold py-3.5 rounded-2xl text-base transition-all active:scale-[0.98] disabled:opacity-50">
-              {verifying ? 'Verifying...' : 'Verify & continue →'}
-            </button>
-
-            <div className="text-center space-y-2">
-              {cooldown > 0 ? (
-                <p className="text-[#A07840] text-sm">Resend in {cooldown}s</p>
-              ) : (
-                <button onClick={() => { setOtp(['', '', '', '', '', '']); setOtpError(''); sendOtp() }}
-                  className="text-[#E8960A] text-sm font-semibold hover:text-[#C47C00]">
-                  Resend code
-                </button>
+              {otpError && (
+                <div className="bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl text-center">{otpError}</div>
               )}
 
-              {!showPhoneInput ? (
-                <button type="button" onClick={() => { setShowPhoneInput(true); setMethod('phone') }}
-                  className="block w-full text-xs text-[#6B4F00] hover:text-[#3D2800] underline">
-                  Verify with phone instead
-                </button>
-              ) : (
-                <div className="space-y-2 pt-1">
-                  <div className="flex gap-2 items-center bg-[#FDF0E0] border border-[#F0D9B0] rounded-xl px-3 py-2">
-                    <span className="text-[#6B4F00] text-sm font-medium">+91</span>
-                    <input type="tel" placeholder="98765 43210" value={phone}
-                      onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                      className="flex-1 outline-none bg-transparent text-sm text-[#3D2800] placeholder-[#A07840]"
-                      maxLength={10} />
-                  </div>
-                  <button type="button" onClick={() => sendOtp()} disabled={phone.length < 10}
-                    className="w-full text-sm text-[#E8960A] font-semibold hover:text-[#C47C00] disabled:opacity-50">
-                    Send code to phone
+              <button
+                onClick={() => verifyOtp()}
+                disabled={verifying || otp.join('').length < 6}
+                className="w-full bg-[#E8960A] hover:bg-[#C47C00] text-white font-bold py-3.5 rounded-2xl text-base transition-all disabled:opacity-50">
+                {verifying ? 'Verifying...' : 'Verify email'}
+              </button>
+
+              <div className="text-center space-y-2">
+                {cooldown > 0 ? (
+                  <p className="text-[#A07840] text-sm">Resend in {cooldown}s</p>
+                ) : (
+                  <button onClick={() => { setOtp(['', '', '', '', '', '']); setOtpError(''); sendOtp() }}
+                    className="text-[#E8960A] text-sm font-semibold hover:text-[#C47C00]">
+                    Resend code
                   </button>
-                </div>
-              )}
+                )}
+
+                {/* Phone option */}
+                {!showPhoneInput ? (
+                  <button
+                    type="button"
+                    onClick={() => { setShowPhoneInput(true); setMethod('phone') }}
+                    className="block w-full text-xs text-[#6B4F00] hover:text-[#3D2800] underline">
+                    Verify with phone instead
+                  </button>
+                ) : (
+                  <div className="space-y-2 pt-1">
+                    <div className="flex gap-2 items-center bg-[#FDF0E0] border border-[#F0D9B0] rounded-xl px-3 py-2">
+                      <span className="text-[#6B4F00] text-sm font-medium">+91</span>
+                      <input
+                        type="tel" placeholder="98765 43210" value={phone}
+                        onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                        className="flex-1 outline-none bg-transparent text-sm text-[#3D2800] placeholder-[#A07840]"
+                        maxLength={10}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => sendOtp()}
+                      disabled={phone.length < 10}
+                      className="w-full text-sm text-[#E8960A] font-semibold hover:text-[#C47C00] disabled:opacity-50">
+                      Send code to phone
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -261,8 +271,11 @@ function SignUpForm() {
               <label className="block text-sm font-semibold text-[#3D2800] mb-1.5">Password</label>
               <div className="relative">
                 <input
-                  type={showPw ? 'text' : 'password'} required placeholder="Min. 8 characters"
-                  value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                  type={showPw ? 'text' : 'password'}
+                  required
+                  placeholder="Min. 8 characters"
+                  value={form.password}
+                  onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                   className="w-full bg-[#FDF0E0] border border-[#F0D9B0] rounded-xl px-4 py-3 pr-11 text-sm text-[#3D2800] placeholder-[#A07840] focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
                 />
                 <button type="button" onClick={() => setShowPw(p => !p)}

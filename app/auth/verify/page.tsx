@@ -27,6 +27,7 @@ function VerifyForm() {
     }
   }, [cooldown])
 
+  // Auto-send email OTP on mount for signin flow
   useEffect(() => {
     if (email) {
       fetch('/api/auth/send-otp', {
@@ -110,17 +111,23 @@ function VerifyForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF5EE] relative overflow-hidden flex items-center justify-center px-4 py-12">
-      <div className="absolute bottom-0 right-0 opacity-5 select-none pointer-events-none" style={{ fontSize: '280px', lineHeight: 1 }}>🐾</div>
+    <div className="h-screen bg-[#FAF5EE] flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-4 pb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🐾</span>
+          <span className="text-xl font-black text-[#3D2800]">Furrlet</span>
+        </div>
+      </div>
 
-      <div className="relative w-full max-w-sm">
-        <div className="text-center mb-6">
-          <div className="text-5xl mb-4">🔐</div>
-          <h1 className="text-2xl font-bold text-[#3D2800]">Verify your account</h1>
-          <p className="text-[#6B4F00] text-sm mt-1">One quick step to keep your account secure</p>
+      <div className="flex-1 flex flex-col justify-center px-5 pb-4 gap-5">
+        <div className="text-center">
+          <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 border border-amber-200">🔐</div>
+          <h1 className="text-2xl font-black text-[#3D2800]">Verify your account</h1>
+          <p className="text-[#9B7B4F] text-sm mt-1">One quick step to keep your account secure</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-6">
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-5">
           {!sent ? (
             <div className="space-y-5">
               <div>
