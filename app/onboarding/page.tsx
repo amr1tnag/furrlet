@@ -6,67 +6,49 @@ import Link from 'next/link'
 
 const ownerSteps = [
   {
-    id: 1,
     icon: '🐕',
     title: 'Add your dog',
-    desc: 'Tell us about your furry friend so walkers know who they\'re walking.',
+    desc: "Tell us about your furry friend so walkers know who they're walking.",
     action: 'Add a Dog',
     href: '/profile/dogs',
-    color: 'from-amber-400 to-orange-400',
-    bg: 'from-amber-50 to-orange-50',
   },
   {
-    id: 2,
     icon: '🔍',
     title: 'Find a walker',
     desc: 'Browse verified, background-checked walkers in your city.',
     action: 'Browse Walkers',
     href: '/walkers',
-    color: 'from-blue-400 to-indigo-400',
-    bg: 'from-blue-50 to-indigo-50',
   },
   {
-    id: 3,
     icon: '📅',
     title: 'Book a walk',
-    desc: 'Pick a date and time. Pay ₹99 for 30 min or ₹199 for 1 hour.',
+    desc: 'Pick a date and time. Secure UPI & card payments.',
     action: 'View Bookings',
     href: '/bookings',
-    color: 'from-green-400 to-emerald-400',
-    bg: 'from-green-50 to-emerald-50',
   },
 ]
 
 const walkerSteps = [
   {
-    id: 1,
     icon: '✏️',
     title: 'Set up your profile',
     desc: 'Add your photo, bio, city and availability so owners can find you.',
     action: 'Edit Profile',
     href: '/profile/walker',
-    color: 'from-amber-400 to-orange-400',
-    bg: 'from-amber-50 to-orange-50',
   },
   {
-    id: 2,
     icon: '🪪',
     title: 'Get verified',
     desc: 'Submit your Aadhaar for a background check. Verified walkers get more bookings.',
     action: 'Get Verified',
-    href: '/profile/walker#verify',
-    color: 'from-blue-400 to-indigo-400',
-    bg: 'from-blue-50 to-indigo-50',
+    href: '/profile/walker',
   },
   {
-    id: 3,
     icon: '💰',
     title: 'Start earning',
-    desc: 'Accept booking requests and earn ₹99–₹199 per walk.',
+    desc: 'Accept booking requests and earn ₹200–500 per hour on your schedule.',
     action: 'View Bookings',
     href: '/bookings',
-    color: 'from-green-400 to-emerald-400',
-    bg: 'from-green-50 to-emerald-50',
   },
 ]
 
@@ -83,101 +65,105 @@ export default function Onboarding() {
   if (status === 'loading') return null
 
   const steps = role === 'WALKER' ? walkerSteps : ownerSteps
+  const current = steps[step]
   const isLast = step === steps.length - 1
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 bg-gradient-to-b from-amber-50 to-white">
-      <div className="w-full max-w-md">
-        {/* Logo + skip */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🐾</span>
-            <span className="font-black text-lg text-gray-900">Furrlet</span>
-          </div>
-          <Link href="/dashboard" className="text-sm text-gray-400 hover:text-gray-600 font-medium transition-colors">
-            Skip →
-          </Link>
-        </div>
+    <div className="h-screen bg-[#FAF5EE] flex flex-col overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-48 h-48 bg-amber-100 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
-        {/* Welcome */}
-        {step === 0 && (
-          <div className="text-center mb-8 animate-fade-up">
-            <div className="text-5xl mb-3">👋</div>
-            <h1 className="text-2xl font-black text-gray-900 mb-2">
-              Welcome, {session?.user?.name?.split(' ')[0]}!
-            </h1>
-            <p className="text-gray-500 text-sm">
-              {role === 'WALKER'
-                ? "You're almost ready to start earning. Here's how to get set up:"
-                : "Let's get you set up in 3 quick steps."}
-            </p>
-          </div>
-        )}
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-4 pb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🐾</span>
+          <span className="text-xl font-black text-[#3D2800]">Furrlet</span>
+        </div>
+        <Link href="/dashboard" className="text-sm font-semibold text-[#9B7B4F] hover:text-[#6B4F00] transition-colors">
+          Skip →
+        </Link>
+      </div>
+
+      <div className="flex-1 flex flex-col justify-evenly px-5 pb-4 relative">
+
+        {/* Welcome + step counter */}
+        <div>
+          <p className="text-[#9B7B4F] text-sm">
+            Welcome, <span className="font-semibold text-[#6B4F00]">{session?.user?.name?.split(' ')[0]}</span> 👋
+          </p>
+          <h1 className="text-2xl font-black text-[#3D2800] mt-0.5">
+            {role === 'WALKER' ? "Let's get you earning" : "Let's get you started"}
+          </h1>
+        </div>
 
         {/* Step dots */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          {steps.map((s, i) => (
-            <div key={i} className={`transition-all duration-300 rounded-full ${
-              i === step ? 'w-6 h-2 bg-amber-500' : i < step ? 'w-2 h-2 bg-amber-300' : 'w-2 h-2 bg-gray-200'
+        <div className="flex items-center gap-2">
+          {steps.map((_, i) => (
+            <div key={i} className={`transition-all duration-300 rounded-full h-2 ${
+              i === step ? 'w-6 bg-amber-500' : i < step ? 'w-2 bg-amber-300' : 'w-2 bg-[#E8D5B0]'
             }`} />
           ))}
+          <span className="text-xs text-[#9B7B4F] ml-1">{step + 1} / {steps.length}</span>
         </div>
 
-        {/* Step card */}
-        <div key={step} className="card p-8 mb-6 animate-fade-up">
-          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${steps[step].bg} flex items-center justify-center text-3xl mb-5 shadow-sm`}>
-            {steps[step].icon}
+        {/* Main step card */}
+        <div className="bg-white rounded-2xl shadow-[0_2px_16px_rgba(232,150,10,0.10)] border border-[#F0E4D0] p-5">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0">
+              {current.icon}
+            </div>
+            <div>
+              <div className="text-xs font-bold text-[#C4A882] uppercase tracking-widest mb-1">Step {step + 1}</div>
+              <h2 className="text-lg font-black text-[#3D2800]">{current.title}</h2>
+              <p className="text-[#9B7B4F] text-sm mt-1 leading-relaxed">{current.desc}</p>
+            </div>
           </div>
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
-            Step {step + 1} of {steps.length}
-          </div>
-          <h2 className="text-xl font-black text-gray-900 mb-2">{steps[step].title}</h2>
-          <p className="text-gray-500 text-sm leading-relaxed mb-6">{steps[step].desc}</p>
 
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             {step > 0 && (
-              <button onClick={() => setStep(s => s - 1)} className="btn-secondary flex-1">
+              <button onClick={() => setStep(s => s - 1)}
+                className="flex-1 py-3 rounded-xl border-2 border-[#F0D9B0] text-[#6B4F00] font-semibold text-sm hover:border-amber-300 transition-all active:scale-[0.98]">
                 ← Back
               </button>
             )}
             {!isLast ? (
-              <button onClick={() => setStep(s => s + 1)} className="btn-primary flex-1">
+              <button onClick={() => setStep(s => s + 1)}
+                className="flex-1 bg-[#E8960A] hover:bg-[#C47C00] text-white font-bold py-3 rounded-xl text-sm transition-all active:scale-[0.98]">
                 Next →
               </button>
             ) : (
-              <Link href={steps[step].href} className="btn-primary flex-1 text-center">
-                {steps[step].action} →
+              <Link href={current.href}
+                className="flex-1 bg-[#E8960A] hover:bg-[#C47C00] text-white font-bold py-3 rounded-xl text-sm transition-all active:scale-[0.98] text-center">
+                {current.action} →
               </Link>
             )}
           </div>
         </div>
 
-        {/* All steps overview */}
+        {/* Steps overview */}
         <div className="space-y-2">
           {steps.map((s, i) => (
             <button key={i} onClick={() => setStep(i)}
-              className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 text-left ${
-                i === step ? 'bg-amber-50 border border-amber-200' : i < step ? 'opacity-60' : 'hover:bg-gray-50'
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all text-left ${
+                i === step
+                  ? 'bg-amber-50 border border-amber-200'
+                  : i < step
+                  ? 'bg-white border border-[#F0E4D0] opacity-70'
+                  : 'bg-white border border-[#F0E4D0]'
               }`}>
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-base flex-shrink-0 ${
-                i < step ? 'bg-green-100' : `bg-gradient-to-br ${s.bg}`
+                i < step ? 'bg-green-100 text-green-600' : 'bg-amber-50 text-base'
               }`}>
                 {i < step ? '✓' : s.icon}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-semibold text-gray-800">{s.title}</div>
-              </div>
-              {i === step && <div className="w-1.5 h-1.5 bg-amber-500 rounded-full flex-shrink-0" />}
-              {i < step && <div className="text-xs text-green-500 font-bold flex-shrink-0">Done</div>}
+              <span className={`text-sm font-semibold flex-1 ${i === step ? 'text-[#3D2800]' : 'text-[#9B7B4F]'}`}>
+                {s.title}
+              </span>
+              {i < step && <span className="text-xs font-bold text-green-500">Done</span>}
+              {i === step && <div className="w-1.5 h-1.5 bg-amber-500 rounded-full" />}
             </button>
           ))}
         </div>
 
-        <div className="text-center mt-8">
-          <Link href="/dashboard" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-            Go to dashboard →
-          </Link>
-        </div>
       </div>
     </div>
   )

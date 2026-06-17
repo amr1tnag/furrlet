@@ -109,7 +109,7 @@ function SignUpForm() {
       const data = await res.json()
       if (!res.ok) { setOtpError(data.error); setOtp(['', '', '', '', '', '']); inputRefs.current[0]?.focus(); return }
       await signIn('credentials', { email: form.email, password: form.password, redirect: false })
-      router.push('/dashboard')
+      router.push('/onboarding')
     } catch {
       setOtpError('Something went wrong. Please try again.')
     } finally {
