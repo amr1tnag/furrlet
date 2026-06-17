@@ -349,7 +349,19 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
 
       {/* Sticky Book Now button */}
       {!confirmedBooking && (
-        <div className="fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3" style={{ backgroundColor: '#FAF5EE' }}>
+        <div className="sm:hidden fixed bottom-16 left-0 right-0 px-4 pb-2 pt-3" style={{ backgroundColor: '#FAF5EE' }}>
+          <button
+            onClick={() => setShowBookModal(true)}
+            className="w-full py-4 rounded-full font-black text-white text-base shadow-lg"
+            style={{ backgroundColor: '#E8960A' }}
+          >
+            Book Now 📅
+          </button>
+        </div>
+      )}
+      {/* Desktop sticky Book Now */}
+      {!confirmedBooking && (
+        <div className="hidden sm:block fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3" style={{ backgroundColor: '#FAF5EE' }}>
           <button
             onClick={() => setShowBookModal(true)}
             className="w-full py-4 rounded-full font-black text-white text-base shadow-lg"
