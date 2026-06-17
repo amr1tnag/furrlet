@@ -137,6 +137,24 @@ export async function sendVerificationRequestEmail({ walkerName, walkerEmail, aa
   })
 }
 
+export async function sendPasswordResetEmail({ name, email, token }: { name: string; email: string; token: string }) {
+  const resetUrl = `https://furrlet.in/auth/reset-password/confirm?token=${token}`
+  await getResend().emails.send({
+    from: FROM,
+    to: email,
+    subject: 'Reset your Furrlet password',
+    html: `
+      <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#FAF5EE;border-radius:16px;">
+        <div style="font-size:40px;margin-bottom:16px;">🔐</div>
+        <h2 style="font-size:22px;font-weight:800;color:#3D2800;margin:0 0 8px;">Reset your password, ${name}</h2>
+        <p style="color:#6B4F00;font-size:15px;margin:0 0 24px;">Click the button below to set a new password. This link expires in 1 hour.</p>
+        <a href="${resetUrl}" style="display:block;text-align:center;background:#E8960A;color:white;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;text-decoration:none;margin-bottom:24px;">Reset Password →</a>
+        <p style="color:#A07840;font-size:12px;text-align:center;">If you didn't request this, ignore this email. Your password won't change.</p>
+      </div>
+    `,
+  })
+}
+
 export async function sendRefundEmail({ ownerEmail, ownerName, dogName, date, amount }: {
   ownerEmail: string
   ownerName: string
