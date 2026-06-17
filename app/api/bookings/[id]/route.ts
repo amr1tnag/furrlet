@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSessionEmail } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { sendBookingStatusEmail, sendRefundEmail } from '@/lib/email'
+import { sendBookingStatusEmail, sendRefundEmail, sendReviewRequestEmail } from '@/lib/email'
 import { sendPushToUser } from '@/lib/push'
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
@@ -120,6 +120,16 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 
   if (status === 'COMPLETED') {
+    try {
+      await sendReviewRequestEmail({
+        ownerEmail: booking.owner.email,
+        ownerName: booking.owner.name,
+        walkerName: booking.walker.name,
+        dogName: booking.dog.name,
+        date: booking.date,
+        bookingId: params.id,
+      })
+    } catch (_) {}
     try {
       await sendPushToUser(existing.ownerId, {
         title: 'Walk Completed!',
