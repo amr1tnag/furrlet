@@ -347,19 +347,19 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
         </div>
       )}
 
-      {/* Sticky Book Now — mobile: above bottom nav, desktop: at page bottom */}
+      {/* Sticky Book Now — sits flush on top of the bottom nav */}
       {!confirmedBooking && (
         <>
-          <div className="sm:hidden fixed bottom-[72px] left-0 right-0 px-4 py-2" style={{ backgroundColor: '#FAF5EE' }}>
+          <div className="sm:hidden fixed bottom-16 left-0 right-0 px-4 pt-2 pb-2 border-t border-[#F0E4D0]" style={{ backgroundColor: '#FAF5EE' }}>
             <button onClick={() => setShowBookModal(true)}
-              className="w-full py-4 rounded-full font-black text-white text-base shadow-lg"
+              className="w-full py-2.5 rounded-full font-black text-white text-sm shadow-md"
               style={{ backgroundColor: '#E8960A' }}>
               Book Now 📅
             </button>
           </div>
-          <div className="hidden sm:block fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3" style={{ backgroundColor: '#FAF5EE' }}>
+          <div className="hidden sm:block fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3 border-t border-[#F0E4D0]" style={{ backgroundColor: '#FAF5EE' }}>
             <button onClick={() => setShowBookModal(true)}
-              className="w-full py-4 rounded-full font-black text-white text-base shadow-lg"
+              className="w-full py-3 rounded-full font-black text-white text-base shadow-md"
               style={{ backgroundColor: '#E8960A' }}>
               Book Now 📅
             </button>
