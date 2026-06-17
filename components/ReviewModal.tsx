@@ -52,35 +52,41 @@ export function ReviewModal({ booking, onClose, onSubmitted }: Props) {
       <div className="absolute inset-0 bg-black/40" />
 
       {/* Sheet */}
-      <div className="relative w-full bg-[#FAF5EE] rounded-t-3xl p-6 pb-28 shadow-2xl"
+      <div className="relative w-full bg-[#FAF5EE] rounded-t-3xl shadow-2xl max-h-[85vh] flex flex-col"
         onClick={e => e.stopPropagation()}>
         {/* Handle */}
-        <div className="w-10 h-1 bg-[#E8D5B0] rounded-full mx-auto mb-4" />
-
-        <div className="text-center mb-4">
-          <div className="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3">⭐</div>
-          <h2 className="text-xl font-black text-[#3D2800]">Rate your walk</h2>
-          <p className="text-[#9B7B4F] text-sm mt-1">
-            {booking.dog?.name} with {booking.walker?.name} · {booking.date}
-          </p>
+        <div className="pt-4 pb-2 px-6">
+          <div className="w-10 h-1 bg-[#E8D5B0] rounded-full mx-auto" />
         </div>
 
-        <StarPicker value={rating} onChange={setRating} />
-        {rating > 0 && (
-          <p className="text-center text-sm font-bold text-amber-600 mt-2">{ratingLabels[rating]}</p>
-        )}
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto px-6 py-2">
+          <div className="text-center mb-4">
+            <div className="w-12 h-12 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-2">⭐</div>
+            <h2 className="text-xl font-black text-[#3D2800]">Rate your walk</h2>
+            <p className="text-[#9B7B4F] text-sm mt-0.5">
+              {booking.dog?.name} with {booking.walker?.name} · {booking.date}
+            </p>
+          </div>
 
-        <textarea
-          rows={2}
-          value={comment}
-          onChange={e => setComment(e.target.value)}
-          placeholder="Share your experience (optional)..."
-          className="w-full mt-4 bg-white border border-[#F0D9B0] rounded-2xl px-4 py-3 text-sm text-[#3D2800] placeholder-[#A07840] resize-none focus:outline-none focus:ring-2 focus:ring-amber-400"
-        />
+          <StarPicker value={rating} onChange={setRating} />
+          {rating > 0 && (
+            <p className="text-center text-sm font-bold text-amber-600 mt-1">{ratingLabels[rating]}</p>
+          )}
 
-        {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
+          <textarea
+            rows={2}
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+            placeholder="Share your experience (optional)..."
+            className="w-full mt-3 bg-white border border-[#F0D9B0] rounded-2xl px-4 py-3 text-sm text-[#3D2800] placeholder-[#A07840] resize-none focus:outline-none focus:ring-2 focus:ring-amber-400"
+          />
 
-        <div className="flex gap-3 mt-4">
+          {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
+        </div>
+
+        {/* Sticky buttons — always visible above bottom nav */}
+        <div className="flex gap-3 px-6 pt-3 pb-24 border-t border-[#F0E4D0] bg-[#FAF5EE]">
           <button onClick={onClose}
             className="flex-1 py-3.5 rounded-2xl border-2 border-[#F0D9B0] text-[#6B4F00] font-semibold text-sm">
             Skip
