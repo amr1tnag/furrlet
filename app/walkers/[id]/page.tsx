@@ -5,9 +5,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 
-declare global {
-  interface Window { Razorpay: any }
-}
 
 const TIERS = [
   { duration: '30', label: '30 Min', price: 99, tier: 'LITE', featured: false },
@@ -44,53 +41,24 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
       }
     })
     fetch(`/api/reviews/${params.id}`).then(r => r.json()).then(d => setReviews(Array.isArray(d) ? d : []))
-    const script = document.createElement('script')
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
-    script.async = true
-    document.body.appendChild(script)
-    return () => { document.body.removeChild(script) }
   }, [params.id])
 
   async function book(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     try {
-      const orderRes = await fetch('/api/payment/order', {
+      const res = await fetch('/api/bookings/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ walkerId: params.id, ...form, duration: selectedDuration }),
       })
-      const order = await orderRes.json()
-      if (!orderRes.ok) throw new Error(order.error)
-
-      const options = {
-        key: order.keyId,
-        amount: order.amount,
-        currency: order.currency,
-        name: 'Furrlet',
-        description: `Dog walk booking`,
-        image: 'https://furrlet.in/favicon.ico',
-        order_id: order.orderId,
-        handler: async (response: any) => {
-          const verifyRes = await fetch('/api/payment/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...response, walkerId: params.id, ...form, duration: selectedDuration }),
-          })
-          if (verifyRes.ok) {
-            const booking = await verifyRes.json()
-            setConfirmedBooking(booking)
-            setShowBookModal(false)
-          }
-        },
-        prefill: { name: session?.user?.name || '', email: session?.user?.email || '', contact: '' },
-        theme: { color: '#E8960A' },
-        modal: { ondismiss: () => setLoading(false) },
-      }
-
-      const rzp = new window.Razorpay(options)
-      rzp.open()
+      const booking = await res.json()
+      if (!res.ok) throw new Error(booking.error)
+      setConfirmedBooking(booking)
+      setShowBookModal(false)
     } catch {
+      // silently handle
+    } finally {
       setLoading(false)
     }
   }
@@ -338,7 +306,7 @@ export default function WalkerDetail({ params }: { params: { id: string } }) {
                   {loading ? (
                     <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Processing...</>
                   ) : (
-                    <>Pay ₹{priceINR} &amp; Book</>
+                    <>Confirm Booking — ₹{priceINR}</>
                   )}
                 </button>
               </div>
