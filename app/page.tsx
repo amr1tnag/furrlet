@@ -167,10 +167,6 @@ export default function LandingPage() {
 
         <div className="relative max-w-4xl mx-auto px-5 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-4 py-1.5 mb-6">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse-soft" />
-            <span className="text-xs font-semibold text-amber-700">Now available in 10+ cities across India</span>
-          </div>
 
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#3D2800] leading-[1.1] tracking-tight mb-6">
@@ -216,23 +212,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── Stats Bar ─── */}
-      <section className="bg-white border-y border-[#F0E4D0]">
-        <div className="max-w-4xl mx-auto px-5 py-8 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:divide-x sm:divide-[#F0E4D0]">
-          {[
-            { value: '500+', label: 'Happy Dogs', icon: '🐶' },
-            { value: '200+', label: 'Verified Walkers', icon: '🦮' },
-            { value: '4.9★', label: 'Average Rating', icon: '⭐' },
-            { value: '10+', label: 'Cities', icon: '🏙️' },
-          ].map(({ value, label, icon }) => (
-            <div key={label} className="text-center sm:px-4">
-              <div className="text-2xl mb-1">{icon}</div>
-              <div className="text-2xl font-black text-[#E8960A]">{value}</div>
-              <div className="text-xs text-[#9B7B4F] font-medium mt-0.5">{label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* ─── How It Works ─── */}
       <section id="how-it-works" className="py-20 sm:py-24 max-w-5xl mx-auto px-5">
