@@ -114,3 +114,13 @@ model PushSubscription {
   auth      String
   createdAt DateTime @default(now())
 }
+
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  city      String
+  role      String   // OWNER | WALKER | BOTH
+  phone     String?
+  createdAt DateTime @default(now())
+}
