@@ -8,7 +8,7 @@ const CITIES = [
 ]
 
 function WaitlistForm() {
-  const [form, setForm] = useState({ name: '', email: '', city: '', role: 'OWNER', phone: '' })
+  const [form, setForm] = useState({ name: '', email: '', city: '', role: 'OWNER' as const, phone: '' })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
 
@@ -71,28 +71,15 @@ function WaitlistForm() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-semibold text-[#3D2800] mb-1.5">Your City</label>
-          <select
-            required value={form.city} onChange={set('city')}
-            className="w-full border border-[#F0D9B0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-[#FDF8F0] text-[#3D2800] transition-all appearance-none"
-          >
-            <option value="">Select city...</option>
-            {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-[#3D2800] mb-1.5">I&apos;m interested as</label>
-          <select
-            required value={form.role} onChange={set('role')}
-            className="w-full border border-[#F0D9B0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-[#FDF8F0] text-[#3D2800] transition-all appearance-none"
-          >
-            <option value="OWNER">Dog Parent (I want walks)</option>
-            <option value="WALKER">Walker (I want to earn)</option>
-            <option value="BOTH">Both</option>
-          </select>
-        </div>
+      <div>
+        <label className="block text-sm font-semibold text-[#3D2800] mb-1.5">Your City</label>
+        <select
+          required value={form.city} onChange={set('city')}
+          className="w-full border border-[#F0D9B0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-[#FDF8F0] text-[#3D2800] transition-all appearance-none"
+        >
+          <option value="">Select city...</option>
+          {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
       </div>
 
       <div>
@@ -353,81 +340,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── For Owners & Walkers ─── */}
-      <section className="py-20 sm:py-24 max-w-5xl mx-auto px-5">
-        <div className="text-center mb-14">
-          <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">Two sides, one platform</span>
-          <h2 className="text-3xl sm:text-4xl font-black text-[#3D2800] mt-2">Built for everyone</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Owners card */}
-          <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl border border-amber-200 p-8">
-            <div className="text-4xl mb-4">🐕</div>
-            <h3 className="text-xl font-black text-[#3D2800] mb-2">For Dog Parents</h3>
-            <p className="text-[#9B7B4F] text-sm mb-6 leading-relaxed">
-              Find the perfect walker for your furry family member — vetted, rated, and ready.
-            </p>
-            <ul className="space-y-3">
-              {[
-                'Search walkers by city, rating & price',
-                'Book and pay in under 2 minutes',
-                'Live GPS walk tracking on your phone',
-                'Receive photos & updates during the walk',
-                'Rate and review after every session',
-              ].map(item => (
-                <li key={item} className="flex items-start gap-2.5 text-sm text-[#6B4F00]">
-                  <span className="w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Link href="/auth/signup?role=owner" className="mt-8 inline-flex items-center gap-2 bg-amber-500 text-white font-bold text-sm px-6 py-3 rounded-xl hover:bg-amber-600 active:scale-[0.98] transition-all shadow-md shadow-amber-200">
-              Sign up as Owner
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-
-          {/* Walkers card */}
-          <div className="bg-gradient-to-br from-[#FDF5E6] to-[#FFF8EC] rounded-3xl border border-[#F0E4D0] p-8">
-            <div className="text-4xl mb-4">🦮</div>
-            <h3 className="text-xl font-black text-[#3D2800] mb-2">For Dog Walkers</h3>
-            <p className="text-[#9B7B4F] text-sm mb-6 leading-relaxed">
-              Turn your love for dogs into a flexible income. Set your own schedule and rates.
-            </p>
-            <ul className="space-y-3">
-              {[
-                'Earn ₹200–500 per hour on your schedule',
-                'Accept or decline bookings freely',
-                'Build a reputation through reviews',
-                'Get paid directly via UPI',
-                'Work in multiple cities near you',
-              ].map(item => (
-                <li key={item} className="flex items-start gap-2.5 text-sm text-[#6B4F00]">
-                  <span className="w-5 h-5 bg-[#3D2800] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Link href="/auth/signup?role=walker" className="mt-8 inline-flex items-center gap-2 bg-[#3D2800] text-white font-bold text-sm px-6 py-3 rounded-xl hover:bg-[#5C3D00] active:scale-[0.98] transition-all shadow-md shadow-amber-100">
-              Sign up as Walker
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* ─── Waitlist Section ─── */}
       <section id="waitlist" className="py-20 sm:py-24 bg-white border-t border-[#F0E4D0]">
