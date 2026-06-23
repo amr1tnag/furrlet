@@ -46,10 +46,6 @@ function WaitlistForm() {
         <p className="text-[#9B7B4F] text-sm leading-relaxed">
           Thanks for joining! We&apos;ll notify you the moment Furrlet launches in your city.
         </p>
-        <p className="mt-4 text-sm text-amber-600 font-medium">
-          Meanwhile, try our MVP →{' '}
-          <Link href="/mvp" className="underline underline-offset-2">furrlet.in/mvp</Link>
-        </p>
       </div>
     )
   }
@@ -163,7 +159,6 @@ export default function LandingPage() {
           <nav className="hidden sm:flex items-center gap-1">
             <a href="#how-it-works" className="px-3 py-1.5 text-sm text-[#9B7B4F] hover:text-[#3D2800] font-medium transition-colors rounded-lg hover:bg-amber-50">How it works</a>
             <a href="#features" className="px-3 py-1.5 text-sm text-[#9B7B4F] hover:text-[#3D2800] font-medium transition-colors rounded-lg hover:bg-amber-50">Features</a>
-            <Link href="/mvp" className="px-3 py-1.5 text-sm text-[#9B7B4F] hover:text-[#3D2800] font-medium transition-colors rounded-lg hover:bg-amber-50">Try MVP</Link>
           </nav>
           <div className="flex items-center gap-2">
             <Link href="/auth/signin" className="text-sm font-semibold text-[#9B7B4F] hover:text-[#3D2800] transition-colors px-3 py-2 hidden sm:block">
@@ -215,11 +210,6 @@ export default function LandingPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </a>
-            <Link href="/mvp"
-              className="w-full sm:w-auto bg-white text-[#3D2800] font-bold px-8 py-4 rounded-2xl text-base border border-[#F0E4D0] shadow-sm hover:border-amber-300 hover:shadow-md active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2">
-              Try the MVP
-              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full uppercase tracking-wide">Live</span>
-            </Link>
           </div>
 
           {/* Social proof pills */}
@@ -501,8 +491,7 @@ export default function LandingPage() {
             <div className="flex items-center gap-6 text-sm text-[#9B7B4F]">
               <Link href="/privacy" className="hover:text-[#3D2800] transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-[#3D2800] transition-colors">Terms</Link>
-              <Link href="/mvp" className="hover:text-[#3D2800] transition-colors">MVP App</Link>
-              <Link href="/auth/signin" className="hover:text-[#3D2800] transition-colors">Sign in</Link>
+<Link href="/auth/signin" className="hover:text-[#3D2800] transition-colors">Sign in</Link>
             </div>
           </div>
           <div className="mt-6 pt-6 border-t border-[#F0E4D0] text-center text-xs text-[#9B7B4F]">
